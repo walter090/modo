@@ -1,3 +1,4 @@
 .idea/
 .env
 modo/modo/settings_secret.py
+__pycache__/
