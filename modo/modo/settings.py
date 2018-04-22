@@ -2,7 +2,7 @@ import environ
 
 from .settings_secret import *
 
-BASE_DIR = environ.Path(__file__)
+BASE_DIR = environ.Path(__file__) - 2
 
 env = environ.Env()
 
