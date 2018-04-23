@@ -36,6 +36,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'webpack_loader',
 ]
 
 LOCAL_APPS = [
@@ -74,6 +75,13 @@ TEMPLATES = [
         },
     },
 ]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'bundles/',
+            'STATS_FILE': BASE_DIR.path('webpack-stats.dev.json'),
+        }
+}
 
 WSGI_APPLICATION = 'modo.wsgi.application'
 
