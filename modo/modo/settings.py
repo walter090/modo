@@ -63,7 +63,7 @@ ROOT_URLCONF = 'modo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.path('templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,13 +75,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-            'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': BASE_DIR.path('webpack-stats.dev.json'),
-        }
-}
 
 WSGI_APPLICATION = 'modo.wsgi.application'
 
