@@ -11,14 +11,14 @@ class HumanManager(BaseUserManager):
 
         email = self.normalize_email(email)
         human = self.model(email=email, **kwargs)
-        human.set_password(password)
+        human.set_password(raw_password=password)
         human.save(using=self._db)
 
         return human
 
     def create_user(self, email, password, **kwargs):
         kwargs.setdefault('is_superuser', False)
-        return self.create_user(email, password, **kwargs)
+        return self._create_user(email, password, **kwargs)
 
     def create_superuser(self, email, password, **kwargs):
         kwargs.setdefault('is_superuser', True)
