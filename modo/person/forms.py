@@ -10,18 +10,38 @@ class SignupForm(forms.ModelForm):
                              error_messages={
                                  'invalid': 'Please enter a valid email address.\n',
                                  'unique': 'User with this email already exists.\n',
-                             })
+                             },
+                             required=True)
     password = forms.CharField(label=_('password'),
                                max_length=200,
-                               widget=forms.PasswordInput())
+                               widget=forms.PasswordInput(),
+                               required=True)
     first_name = forms.CharField(label=_('first name'),
                                  max_length=100,
-                                 required=True)
+                                 required=False)
     last_name = forms.CharField(label=_('last name'),
                                 max_length=100,
-                                required=True)
+                                required=False)
 
     class Meta:
         model = Human
         widgets = {'password': forms.PasswordInput()}
         fields = ('email', 'password', 'first_name', 'last_name')
+
+
+class SignInForm(forms.Form):
+    email = forms.EmailField(label=_('email'),
+                             validators=[validators.EmailValidator],
+                             error_messages={
+                                 'invalid': 'Please enter a valid email address.\n',
+                             },
+                             required=True)
+    password = forms.CharField(label=_('password'),
+                               max_length=200,
+                               widget=forms.PasswordInput(),
+                               required=True)
+
+    class Meta:
+        model = Human
+        widgets = {'password': forms.PasswordInput()}
+        fields = ('email', 'password')
