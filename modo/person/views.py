@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .forms import SignupForm
+from .forms import SignupForm, SignInForm
 from .models import Human
 from .serializers import HumanSerializer
 
@@ -34,10 +35,11 @@ class HumanView(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         model_form = SignupForm(request.data)
-        serializer = self.get_serializer(request.data)
+        serializer = self.get_serializer(data=request.data)
 
-        if model_form.is_valid():
-            self.perform_create(serializer)
-            return Response(serializer.data, status=201)
+        if model_form.is_valid() and serializer.is_valid():
+            Human.objects.create_user(email=request.data['email'],
+                                      password=request.data['password'])
+            return Response(serializer.data['email'], status=201)
         else:
             return Response({'errors': model_form.errors}, status=400)
