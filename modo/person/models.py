@@ -11,11 +11,12 @@ from . import auxiliary
 
 class Human(AbstractBaseUser, PermissionsMixin):
     identifier = models.BigIntegerField(_('identifier'), unique=True,
-                                        primary_key=True, default=auxiliary.make_id())
+                                        primary_key=True, default=auxiliary.make_id)
     email = models.EmailField(_('email address'), unique=True, null=False, blank=False)
+    password = models.CharField(_('password'), null=False, blank=False, max_length=200)
     first_name = models.CharField(_('first name'), max_length=50, blank=True)
     last_name = models.CharField(_('last name'), max_length=50, blank=True)
-    registered_since = models.DateField(_('registerd since'), default=datetime.date.today())
+    registered_since = models.DateField(_('registerd since'), default=datetime.date.today)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     profile_pic = models.ImageField(_('profile picture'), upload_to='pic/',
