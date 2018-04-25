@@ -1,10 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .forms import SignupForm, SignInForm
+from .forms import SignupForm
 from .models import Human
 from .serializers import HumanSerializer
 
