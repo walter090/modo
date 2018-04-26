@@ -2,3 +2,4 @@
 .env
 modo/modo/settings_secret.py
 __pycache__/
+jupyter/
