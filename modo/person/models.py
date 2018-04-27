@@ -6,7 +6,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import HumanManager
-from modo.modo.util import auxiliary
+from modo.util import auxiliary
 
 
 class Human(AbstractBaseUser, PermissionsMixin):
