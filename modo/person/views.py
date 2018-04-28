@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from rest_framework import permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -13,7 +15,7 @@ class HumanView(ModelViewSet):
     serializer_class = HumanSerializer
 
     def get_permissions(self):
-        if self.action == 'list':
+        if self.action == 'list' or self.action == 'destroy':
             permission_classes = [permissions.IsAdminUser]
         elif self.action == 'retrieve':
             permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -28,9 +30,13 @@ class HumanView(ModelViewSet):
 
     def retrieve(self, request, pk=None, **kwargs):
         queryset = self.get_queryset()
-        human = get_object_or_404(queryset, pk=pk)
-        serializer = self.get_serializer(human)
-        return Response(serializer.data)
+
+        try:
+            human = get_object_or_404(queryset, pk=pk)
+            serializer = self.get_serializer(human)
+            return Response(serializer.data)
+        except Http404:
+            return Response({'error': 'User does not exist.'})
 
     def create(self, request, *args, **kwargs):
         model_form = SignupForm(request.data)
@@ -42,3 +48,21 @@ class HumanView(ModelViewSet):
             return Response(serializer.data['email'], status=201)
         else:
             return Response({'errors': model_form.errors}, status=400)
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        if Human.objects.filter(pk=pk).count():
+            email = Human.objects.get(pk=pk).email
+            Human.objects.get(pk=pk).delete()
+            return Response({'email': email})
+        else:
+            return Response({'error': 'User does not exist.'}, status=204)
+
+    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
+    def get_primary_key(self, request):
+        queryset = self.get_queryset()
+        email = request.data['email']
+        try:
+            human = get_object_or_404(queryset, email=email)
+            return Response({'primary_key': human.identifier})
+        except Http404:
+            return Response({'error': 'User does not exist.'})
