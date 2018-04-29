@@ -1,9 +1,8 @@
-import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from person.models import Human
 from modo.util import auxiliary
+from person.models import Human
 from .managers import ArticleManager
 
 
@@ -21,16 +20,13 @@ class Article(models.Model):
     publish_time = models.DateTimeField(_('publish time'), null=True)
     videos = models.TextField(_('videos'), null=True)
     tags = models.TextField(_('tags'), null=True)
+    topic = models.CharField(_('category'), max_length=20, default='general')
 
-    saved_by = models.ManyToManyField(Human, through='Readership')
+    saved_by = models.ManyToManyField(Human, related_name='saved')
+    viewed_by = models.ManyToManyField(Human, related_name='viewed')
+    shared_by = models.ManyToManyField(Human, related_name='shared')
 
     objects = ArticleManager
 
     def __str__(self):
         return self.title
-
-
-class Readership(models.Model):
-    person = models.ForeignKey(Human, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    saved_on = models.DateField(default=datetime.date.today)
