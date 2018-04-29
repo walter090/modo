@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from person.models import Human
 from modo.util import auxiliary
+from .managers import ArticleManager
 
 
 class Article(models.Model):
@@ -22,6 +23,8 @@ class Article(models.Model):
     tags = models.TextField(_('tags'), null=True)
 
     saved_by = models.ManyToManyField(Human, through='Readership')
+
+    objects = ArticleManager
 
     def __str__(self):
         return self.title
