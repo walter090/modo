@@ -74,6 +74,3 @@ class ArticleManager(Manager):
         user = Human.objects.get(identifier=user_id)
         article = self.get(identifier=article_id)
         article.saved_by.remove(user)
-
-    def fetch_articles(self, num=20):
-        raise NotImplementedError
