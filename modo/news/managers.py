@@ -57,3 +57,17 @@ class ArticleManager(Manager):
         user = Human.objects.get(identifer=user_id)
         article = self.get(identifier=article_id)
         article.saved_by.add(user)
+
+    def remove_saved_article(self, user_id, article_id):
+        """Remove a saved article for a particular user.
+
+        Args:
+            user_id: bigint, User identifier/pk.
+            article_id: bigint, Article identifier/pk.
+
+        Returns:
+            None.
+        """
+        user = Human.objects.get(identifier=user_id)
+        article = self.get(identifier=article_id)
+        article.saved_by.remove(user)
