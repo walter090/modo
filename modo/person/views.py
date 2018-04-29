@@ -63,7 +63,7 @@ class HumanView(ModelViewSet):
         human.delete()
         return Response({'email': email})
 
-    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
+    @action(methods=['post'], detail=False)
     def get_primary_key(self, request):
         queryset = self.get_queryset()
         email = request.data['email']
