@@ -2,6 +2,8 @@ from dateutil import parser
 
 from django.db.models import Manager
 
+from person.models import Human
+
 
 class ArticleManager(Manager):
     use_in_migration = True
@@ -41,3 +43,17 @@ class ArticleManager(Manager):
         article.tags = ', '.join(tags)
 
         article.save()
+
+    def save_article(self, user_id, article_id):
+        """Perform the action of user saving an article.
+
+        Args:
+            user_id: bigint, User identifier/pk.
+            article_id: bigint, Article identifier/pk.
+
+        Returns:
+            None
+        """
+        user = Human.objects.get(identifer=user_id)
+        article = self.get(identifier=article_id)
+        article.saved_by.add(user)
