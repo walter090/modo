@@ -4,10 +4,12 @@ from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import PermissionDenied
 
 from .forms import SignupForm
 from .models import Human
 from .serializers import HumanSerializer
+from .permissions import IsAuthenticatedSelf
 
 
 class HumanView(ModelViewSet):
@@ -15,10 +17,12 @@ class HumanView(ModelViewSet):
     serializer_class = HumanSerializer
 
     def get_permissions(self):
-        if self.action == 'list' or self.action == 'destroy':
+        if self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
-        elif self.action == 'retrieve':
-            permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+        elif self.action == 'destroy':
+            permission_classes = [permissions.IsAdminUser, IsAuthenticatedSelf]
+        elif self.action == 'retrieve' or self.action == 'partial_update':
+            permission_classes = [permissions.IsAuthenticated]
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
@@ -49,13 +53,15 @@ class HumanView(ModelViewSet):
         else:
             return Response({'errors': model_form.errors}, status=400)
 
-    def destroy(self, request, pk=None, *args, **kwargs):
-        if Human.objects.filter(pk=pk).count():
-            email = Human.objects.get(pk=pk).email
-            Human.objects.get(pk=pk).delete()
-            return Response({'email': email})
-        else:
-            return Response({'error': 'User does not exist.'}, status=204)
+    def destroy(self, request, *args, **kwargs):
+        try:
+            human = self.get_object()
+        except PermissionDenied as pd:
+            return Response({'error': str(pd)})
+
+        email = human.email
+        human.delete()
+        return Response({'email': email})
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request):
