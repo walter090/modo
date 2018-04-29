@@ -13,7 +13,8 @@ class ArticleManager(Manager):
                        site_name, publish_time,
                        authors, description,
                        tweets, videos,
-                       tags, language='en'):
+                       tags, language='en',
+                       topic='general'):
         """Function for creating a new article.
 
         Args:
@@ -28,13 +29,15 @@ class ArticleManager(Manager):
             videos: list, List of links to videos in the article.
             tags: list, List of tags attached to the article.
             language: str, Code for the language of the article.
+            topic: str, Category of an article.
 
         Returns:
             None.
         """
         article = self.model(url=url, title=title,
                              text=text, site_name=site_name,
-                             language=language, description=description)
+                             language=language, description=description,
+                             category=topic)
 
         article.publish_time = parser(publish_time)
         article.authors = ', '.join(authors)
@@ -71,3 +74,6 @@ class ArticleManager(Manager):
         user = Human.objects.get(identifier=user_id)
         article = self.get(identifier=article_id)
         article.saved_by.remove(user)
+
+    def fetch_articles(self, num=20):
+        raise NotImplementedError
