@@ -64,6 +64,10 @@ class HumanView(ModelViewSet):
             if key in constants.EDITABLE_FIELDS:
                 setattr(human, key, value)
 
+        human.save()
+
+        return Response({'info': 'Account updated.'})
+
     def destroy(self, request, *args, **kwargs):
         try:
             human = self.get_object()
