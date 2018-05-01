@@ -31,11 +31,9 @@ class HumanView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None, **kwargs):
-        queryset = self.get_queryset()
-
+    def retrieve(self, request, **kwargs):
         try:
-            human = get_object_or_404(queryset, pk=pk)
+            human = self.get_object()
             serializer = self.get_serializer(human)
             return Response(serializer.data)
         except Http404:
@@ -77,13 +75,3 @@ class HumanView(ModelViewSet):
         email = human.email
         human.delete()
         return Response({'email': email})
-
-    @action(methods=['post'], detail=False)
-    def get_primary_key(self, request):
-        queryset = self.get_queryset()
-        email = request.data['email']
-        try:
-            human = get_object_or_404(queryset, email=email)
-            return Response({'primary_key': human.identifier})
-        except Http404:
-            return Response({'error': 'User does not exist.'})
