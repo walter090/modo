@@ -2,7 +2,7 @@
 
 import datetime
 from django.db import migrations, models
-import person.managers
+import person.management.managers
 
 
 class Migration(migrations.Migration):
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
             managers=[
-                ('objects', person.managers.HumanManager()),
+                ('objects', person.management.managers.HumanManager()),
             ],
         ),
     ]
