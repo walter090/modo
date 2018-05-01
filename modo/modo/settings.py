@@ -146,6 +146,12 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = HIDDEN_EMAIL_HOST
+EMAIL_HOST_USER = HIDDEN_EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = HIDDEN_EMAIL_HOST_PASSWORD
+EMAIL_PORT = HIDDEN_EMAIL_PORT
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
