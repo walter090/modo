@@ -1,7 +1,7 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'crunchy_waffles.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'modo.settings')
 
 app = Celery('modo')
 
