@@ -3,3 +3,5 @@
 modo/modo/settings_secret.py
 __pycache__/
 jupyter/
+modo/news/management/secret_constant.py
+modo/static/
