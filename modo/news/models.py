@@ -29,7 +29,7 @@ class Article(models.Model):
 
     views = models.IntegerField(_('views'), default=0)
 
-    objects = ArticleManager
+    objects = ArticleManager()
 
     class Meta:
         ordering = ['-publish_time', 'views']
