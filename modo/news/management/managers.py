@@ -14,7 +14,7 @@ class ArticleManager(Manager):
                        authors, description,
                        tweets, videos,
                        tags, language='en',
-                       topic='general'):
+                       topic='general', images=None):
         """Function for creating a new article.
 
         Args:
@@ -30,6 +30,7 @@ class ArticleManager(Manager):
             tags: list, List of tags attached to the article.
             language: str, Code for the language of the article.
             topic: str, Category of an article.
+            images: str, URL to images.
 
         Returns:
             None.
@@ -37,10 +38,10 @@ class ArticleManager(Manager):
         article = self.model(url=url, title=title,
                              text=text, site_name=site_name,
                              language=language, description=description,
-                             category=topic)
+                             category=topic, authors=authors,
+                             images=images)
 
         article.publish_time = parser(publish_time)
-        article.authors = ', '.join(authors)
         article.tweets = ', '.join(tweets)
         article.videos = ', '.join(videos)
         article.tags = ', '.join(tags)
