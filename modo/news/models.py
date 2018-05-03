@@ -11,6 +11,7 @@ class Article(models.Model):
                                         primary_key=True, default=auxiliary.make_id)
     url = models.TextField(_('url'), unique=True)
     title = models.TextField(_('title'))
+    slug = models.SlugField(_('slug title'), max_length=200, blank=True)
     authors = models.TextField(_('authors'), null=True)
     description = models.TextField(_('description'), null=True, blank=True)
     language = models.CharField(_('language'), max_length=10, default='en')
