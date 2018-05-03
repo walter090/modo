@@ -19,3 +19,9 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             'videos',
             'tags'
         )
+
+
+class ArticleCreationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Article
+        fields = ('url', 'authors', 'publish_time', 'images')
