@@ -1,6 +1,8 @@
-from dateutil import parser
+import datetime
 
+from dateutil import parser
 from django.db.models import Manager
+from goose3 import Goose
 
 from person.models import Human
 
@@ -8,43 +10,45 @@ from person.models import Human
 class ArticleManager(Manager):
     use_in_migration = True
 
-    def create_article(self, url,
-                       title, text,
-                       site_name, publish_time,
-                       authors, description,
-                       tweets, videos,
-                       tags, language='en',
-                       topic='general', images=None):
+    def create_article(self, url, authors,
+                       publish_time, title_image):
         """Function for creating a new article.
 
         Args:
             url: str, URL to the article.
-            title: str, Title of the article.
-            text: str, Cleaned text of the article.
-            site_name: str, Name of the source site.
-            publish_time: str, Date time of the article's publishing.
-            authors: list, List of strings of the authors.
-            description: str, Description/subtitle of the article.
-            tweets: list, List of links to tweets in the article.
-            videos: list, List of links to videos in the article.
-            tags: list, List of tags attached to the article.
-            language: str, Code for the language of the article.
-            topic: str, Category of an article.
-            images: str, URL to images.
+            authors: str, Authors' names.
+            publish_time: str, Time of publishing.
+            title_image: str, URL to title image.
 
         Returns:
             None.
         """
-        article = self.model(url=url, title=title,
-                             text=text, site_name=site_name,
-                             language=language, description=description,
-                             category=topic, authors=authors,
-                             images=images)
+        article = self.model(url=url)
 
-        article.publish_time = parser(publish_time)
-        article.tweets = ', '.join(tweets)
-        article.videos = ', '.join(videos)
-        article.tags = ', '.join(tags)
+        goose = Goose()
+
+        article_info = goose.extract(url=article['url']).infos
+
+        article.title = article_info['title'],
+        article.language = article_info['meta']['lang'],
+        article.site_name = article_info['site_name'],
+        article.authors = authors,
+        article.description = article_info['opengraph']['description'],
+        article.images = title_image,
+
+        tweets = article_info['tweets'],
+        tags = article_info['tags'],
+        videos = article_info['movies'],
+
+        try:
+            article.publish_time = parser.parse(publish_time)
+        except (ValueError, OverflowError):
+            print('Invalid datetime format.')
+            article.publish_time = datetime.datetime.now()
+
+        article.tweets = ', '.join(tweets) if tweets and len(tweets) else None
+        article.videos = ', '.join(videos) if videos and len(videos) else None
+        article.tags = ', '.join(tags) if tags and len(tags) else None
 
         article.save()
 

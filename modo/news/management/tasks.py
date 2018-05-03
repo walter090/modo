@@ -1,7 +1,6 @@
 import re
 
 from celery import shared_task
-from goose3 import Goose
 from newsapi import NewsApiClient
 
 from news.models import Article
@@ -12,7 +11,6 @@ from .secret_constant import API_KEY
 def pull_articles():
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
-    goose = Goose({'enable_image_fetching': True})
 
     # Fetch up-to-date sources.
     with open('sources.txt', 'r') as file:
@@ -24,19 +22,11 @@ def pull_articles():
         articles = api.get_top_headlines(sources=source_chunk, page_size=100)['articles']
 
         for article in articles:
-            article_info = goose.extract(url=article['url']).infos
             Article.objects.create_article(
                 url=article['url'],
-                title=article['title'],
-                language=article_info['meta']['lang'],
-                site_name=article['source']['name'],
                 authors=article['author'],
-                description=article['description'],
                 publish_time=article['publishedAt'],
-                tweets=article_info['tweets'],
-                tags=article_info['tags'],
-                videos=article_info['movies'],
-                images=article['urlToImage'],
+                title_image=article['urlToImage']
             )
 
 
