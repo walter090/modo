@@ -23,28 +23,29 @@ class ArticleManager(Manager):
         Returns:
             None.
         """
-        article = self.model(url=url)
+        article = self.model(url=url, authors=authors)
 
         goose = Goose()
 
-        article_info = goose.extract(url=article['url']).infos
+        article_info = goose.extract(url=url)
+        article_info = article_info.infos
 
-        article.title = article_info['title'],
-        article.site_name = article_info['site_name'],
-        article.authors = authors,
-        article.description = article_info['opengraph']['description'],
-        article.images = title_image,
+        article.title = article_info['title']
+        article.site_name = article_info['opengraph']['site_name']
+        article.description = article_info['opengraph']['description']
+        article.images = title_image
+        article.text = article_info['cleaned_text']
 
         lang = article_info['meta']['lang']
         article.language = lang if lang else 'en'
 
-        tweets = article_info['tweets'],
-        tags = article_info['tags'],
-        videos = article_info['movies'],
+        tweets = article_info['tweets']
+        tags = article_info['tags']
+        videos = article_info['movies']
 
         try:
             article.publish_time = parser.parse(publish_time)
-        except (ValueError, OverflowError):
+        except (ValueError, OverflowError, TypeError):
             print('Invalid datetime format.')
             article.publish_time = datetime.datetime.now()
 
