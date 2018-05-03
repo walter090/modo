@@ -158,7 +158,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_IMPORTS = ['news.management.tasks']
 CELERY_BEAT_SCHEDULE = {
     'pull_stories': {
-        'task': 'news.management.tasks.pull_stories',
+        'task': 'news.management.tasks.pull_articles',
         'schedule': crontab(minute=0, hour='*/2')
     },
     'update_sources': {
