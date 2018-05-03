@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -74,3 +75,13 @@ class HumanView(ModelViewSet):
         email = human.email
         human.delete()
         return Response({'email': email})
+
+    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
+    def get_primary_key(self, request):
+        queryset = self.get_queryset()
+        email = request.data['email']
+        try:
+            human = get_object_or_404(queryset, email=email)
+            return Response({'primary_key': human.identifier})
+        except Http404:
+            return Response({'error': 'User does not exist.'})
