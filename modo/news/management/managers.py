@@ -2,6 +2,7 @@ import datetime
 
 from dateutil import parser
 from django.db.models import Manager
+from django.template.defaultfilters import slugify
 from goose3 import Goose
 
 from person.models import Human
@@ -42,6 +43,8 @@ class ArticleManager(Manager):
         tweets = article_info['tweets']
         tags = article_info['tags']
         videos = article_info['movies']
+
+        article.slug = slugify(article.title)
 
         try:
             article.publish_time = parser.parse(publish_time)
