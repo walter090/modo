@@ -1,4 +1,5 @@
 import environ
+from celery.schedules import crontab
 
 from .settings_secret import *
 
@@ -151,6 +152,20 @@ EMAIL_HOST = HIDDEN_EMAIL_HOST
 EMAIL_HOST_USER = HIDDEN_EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = HIDDEN_EMAIL_HOST_PASSWORD
 EMAIL_PORT = HIDDEN_EMAIL_PORT
+
+CELERY_BROKER_URL = HIDDEN_BROKER_URL
+CELERY_TIMEZONE = 'UTC'
+CELERY_IMPORTS = ['news.management.tasks']
+CELERY_BEAT_SCHEDULE = {
+    'pull_stories': {
+        'task': 'news.management.tasks.pull_stories',
+        'schedule': crontab(minute=0, hour='*/2')
+    },
+    'update_sources': {
+        'task': 'news.management.tasks.update_sources',
+        'schedule': crontab(minute=0, hour=0, day_of_week='sun')
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
