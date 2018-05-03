@@ -1,6 +1,7 @@
 from django.http import Http404
 from rest_framework import permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -40,3 +41,16 @@ class NewsView(ModelViewSet):
             return Response({'message': 'News story added.'})
         else:
             return Response({'error': 'Invalid input.'})
+
+    def destroy(self, request, *args, **kwargs):
+        """ Delete a news story, for admin use only.
+        """
+        try:
+            article = self.get_object()
+        except PermissionDenied as pd:
+            return Response({'error': str(pd)})
+
+        title = article.title
+        site_name = article.site_name
+        article.delete()
+        return Response({'message': '{0} from {1} is removed.'.format(title, site_name)})
