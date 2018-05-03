@@ -30,11 +30,13 @@ class ArticleManager(Manager):
         article_info = goose.extract(url=article['url']).infos
 
         article.title = article_info['title'],
-        article.language = article_info['meta']['lang'],
         article.site_name = article_info['site_name'],
         article.authors = authors,
         article.description = article_info['opengraph']['description'],
         article.images = title_image,
+
+        lang = article_info['meta']['lang']
+        article.language = lang if lang else 'en'
 
         tweets = article_info['tweets'],
         tags = article_info['tags'],
