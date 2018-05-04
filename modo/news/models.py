@@ -2,8 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from modo.util import auxiliary
-from person.models import Human
 from news.management.managers import ArticleManager
+from person.models import Human
 
 
 class Article(models.Model):
