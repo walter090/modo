@@ -34,7 +34,6 @@ entertainment-weekly
 espn
 espn-cric-info
 financial-post
-financial-times
 focus
 football-italia
 fortune
