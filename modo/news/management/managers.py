@@ -1,6 +1,8 @@
 import datetime
 
 from dateutil import parser
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.db.models import Manager
 from django.template.defaultfilters import slugify
 from goose3 import Goose
@@ -31,20 +33,29 @@ class ArticleManager(Manager):
         article_info = goose.extract(url=url)
         article_info = article_info.infos
 
-        article.title = article_info['title']
-        article.site_name = article_info['opengraph']['site_name']
-        article.description = article_info['opengraph']['description']
+        article.title = self._extract_section(article_info, 'title', None)
+        article.description = self._extract_section(article_info['opengraph'], 'description', None)
         article.images = title_image
-        article.text = article_info['cleaned_text']
+        article.text = self._extract_section(article_info, 'cleaned_text', None)
+
+        try:
+            site_name = article_info['opengraph']['site_name']
+        except KeyError:
+            site_name = 'Unknown'
+
+        article.site_name = site_name
+
+        if authors is None or authors == '':
+            article.authors = site_name
 
         lang = article_info['meta']['lang']
         article.language = lang if lang else 'en'
 
-        tweets = article_info['tweets']
-        tags = article_info['tags']
-        videos = article_info['movies']
+        tweets = self._extract_section(article_info, 'tweets', None)
+        tags = self._extract_section(article_info, 'tags', None)
+        videos = self._extract_section(article_info, 'videos', None)
 
-        article.slug = slugify(article.title)
+        article.slug = slugify(article.title) if article.title else None
 
         try:
             article.publish_time = parser.parse(publish_time)
@@ -53,10 +64,34 @@ class ArticleManager(Manager):
             article.publish_time = datetime.datetime.now()
 
         article.tweets = ', '.join(tweets) if tweets and len(tweets) else None
-        article.videos = ', '.join(videos) if videos and len(videos) else None
+        article.videos = ', '.join([video['src'] for video in videos]) if videos and len(videos) else None
         article.tags = ', '.join(tags) if tags and len(tags) else None
 
-        article.save()
+        try:
+            article.full_clean()
+            article.save()
+        except (ValidationError, IntegrityError):
+            print('Article already in database.')
+            pass
+
+    @staticmethod
+    def _extract_section(info, section, absent):
+        """ Catch KeyError when extracting information.
+
+        Args:
+            info: dict, Dictionary containing article information.
+            section: str, Key in the dictionary to extract.
+            absent: str, Fill in value when a KeyError is thrown.
+
+        Returns:
+
+        """
+        try:
+            value = info[section]
+        except KeyError:
+            value = absent
+
+        return value.lstrip() if isinstance(value, str) else value
 
     def save_article(self, user_id, article_id):
         """Perform the action of user saving an article.
