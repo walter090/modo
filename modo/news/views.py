@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -40,7 +41,7 @@ class NewsView(ModelViewSet):
                                            title_image=data['images'])
             return Response({'message': 'News story added.'})
         else:
-            return Response({'error': 'Invalid input.'})
+            return Response({'error': serializer.errors})
 
     def destroy(self, request, *args, **kwargs):
         """ Delete a news story, for admin use only.
@@ -54,3 +55,13 @@ class NewsView(ModelViewSet):
         site_name = article.site_name
         article.delete()
         return Response({'message': '{0} from {1} is removed.'.format(title, site_name)})
+
+    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
+    def get_primary_key(self, request):
+        queryset = self.get_queryset()
+        url = request.data['url']
+        try:
+            article = get_object_or_404(queryset, url=url)
+            return Response({'primary_key': article.identifier})
+        except Http404:
+            return Response({'error': 'Article does not exist.'})
