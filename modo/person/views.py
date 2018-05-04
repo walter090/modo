@@ -17,8 +17,10 @@ class HumanView(ModelViewSet):
     queryset = Human.objects.all()
     serializer_class = HumanSerializer
 
+    lookup_field = 'username'
+
     def get_permissions(self):
-        if self.action == 'list':
+        if self.action == 'list' or self.action == 'get_primary_key':
             permission_classes = [permissions.IsAdminUser]
         elif self.action == 'destroy' or self.action == 'partial_update':
             permission_classes = [IsSelfOrAdmin]
@@ -44,7 +46,8 @@ class HumanView(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
 
         if model_form.is_valid() and serializer.is_valid():
-            Human.objects.create_user(email=request.data['email'],
+            Human.objects.create_user(username=request.data['username'],
+                                      email=request.data['email'],
                                       password=request.data['password'])
             return Response(serializer.data['email'], status=201)
         else:
@@ -76,7 +79,7 @@ class HumanView(ModelViewSet):
         human.delete()
         return Response({'email': email})
 
-    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
+    @action(methods=['post'], detail=False)
     def get_primary_key(self, request):
         queryset = self.get_queryset()
         email = request.data['email']
