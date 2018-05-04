@@ -50,7 +50,8 @@ def update_sources():
     sources = list(filter(regex.search, sources))
 
     # Save sources to text file.
-    with open('sources.txt', 'w') as file:
+    base = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(base, 'sources.txt'), 'w') as file:
         for source in sources:
             file.write(source)
             file.write('\n')
