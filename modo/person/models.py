@@ -12,6 +12,7 @@ from person.management.managers import HumanManager
 class Human(AbstractBaseUser, PermissionsMixin):
     identifier = models.BigIntegerField(_('identifier'), unique=True,
                                         primary_key=True, default=auxiliary.make_id)
+    username = models.CharField(_('username'), unique=True, max_length=50)
     email = models.EmailField(_('email address'), unique=True,
                               null=False, blank=False)
     password = models.CharField(_('password'), null=False,
@@ -27,6 +28,7 @@ class Human(AbstractBaseUser, PermissionsMixin):
                                     null=True, blank=True)
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     objects = HumanManager()
 
