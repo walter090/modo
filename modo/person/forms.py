@@ -5,6 +5,11 @@ from django.utils.translation import ugettext as _
 
 
 class SignupForm(forms.ModelForm):
+    username = forms.CharField(label=_('username'),
+                               error_messages={
+                                   'unique': 'Username is taken.\n'
+                               },
+                               required=True)
     email = forms.EmailField(label=_('email'),
                              validators=[validators.EmailValidator],
                              error_messages={
