@@ -1,4 +1,6 @@
+import os
 import re
+from requests.exceptions import Timeout
 
 from celery import shared_task
 from newsapi import NewsApiClient
@@ -13,13 +15,20 @@ def pull_articles():
     api = NewsApiClient(api_key=API_KEY)
 
     # Fetch up-to-date sources.
-    with open('sources.txt', 'r') as file:
+    base = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(base, 'sources.txt'), 'r') as file:
         sources = file.read().split('\n')
 
     for chunk_i in range(len(sources) % 10):
         # Pull multiple sources at a time to minimize number of requests.
-        source_chunk = ', '.join(sources[chunk_i: chunk_i + 10])
-        articles = api.get_top_headlines(sources=source_chunk, page_size=100)['articles']
+        source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
+        print(source_chunk)
+        try:
+            articles = api.get_top_headlines(sources=source_chunk,
+                                             page_size=100,
+                                             language='en')['articles']
+        except Timeout:
+            continue
 
         for article in articles:
             Article.objects.create_article(
@@ -37,7 +46,7 @@ def update_sources():
     sources = api.get_sources()['sources']
     sources = [source['id'] for source in sources]
     # Exclude Google News
-    regex = re.compile(r'^(?!google-news)')
+    regex = re.compile(r'^(?!(google-news|financial-times))')
     sources = list(filter(regex.search, sources))
 
     # Save sources to text file.
