@@ -27,3 +27,18 @@ class ArticleCreationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
         fields = ('url', 'authors', 'publish_time', 'images')
+
+
+class ArticleHeadlineSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Article
+        fields = (
+            'url',
+            'authors',
+            'publish_time',
+            'images',
+            'title',
+            'description',
+            'site_name',
+            'tags'
+        )
