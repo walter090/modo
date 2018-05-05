@@ -103,5 +103,5 @@ class NewsView(ModelViewSet):
         try:
             article = get_object_or_404(queryset, url=url)
             return Response({'primary_key': article.identifier})
-        except Http404:
-            return Response({'error': 'Article does not exist.'})
+        except Http404 as e:
+            return Response({'error': str(e)})
