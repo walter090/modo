@@ -90,6 +90,17 @@ class HumanView(ModelViewSet):
         serializer = ArticleHeadlineSerializer(saved_articles, many=True)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=True, permission_classes=[IsSelfOrAdmin])
+    def viewed(self, request, *args, **kwargs):
+        try:
+            human = self.get_object()
+        except Http404 as e:
+            return Response({'error': str(e)})
+
+        saved_articles = human.viewd.all()
+        serializer = ArticleHeadlineSerializer(saved_articles, many=True)
+        return Response(serializer.data)
+
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request):
         queryset = self.get_queryset()
