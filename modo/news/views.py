@@ -89,7 +89,7 @@ class NewsView(ModelViewSet):
             return Response({'error': str(pd)})
 
         if article.viewed_by.filter(identifier=request.user.identifier).count() == 0:
-            # Check if the article is already saved by current user.
+            # Check if the article is already viewed by current user.
             article.viewed_by.add(request.user)
             return Response({'message': '"{}" is saved.'.format(article.title)})
         else:
