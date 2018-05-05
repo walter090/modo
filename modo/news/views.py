@@ -57,7 +57,7 @@ class NewsView(ModelViewSet):
         return Response({'message': '{0} from {1} is removed.'.format(title, site_name)})
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
-    def user_share_story(self, request, *args, **kwargs):
+    def share(self, request, *args, **kwargs):
         try:
             article = self.get_object()
         except PermissionDenied as pd:
