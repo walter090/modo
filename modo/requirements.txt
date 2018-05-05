@@ -15,7 +15,6 @@ chardet==3.0.4
 colorama==0.3.7
 coverage==4.5.1
 cssselect==1.0.3
-Cython==0.28.2
 decorator==4.3.0
 defusedxml==0.5.0
 Django==2.0.4
