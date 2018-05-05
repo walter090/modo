@@ -39,7 +39,6 @@ football-italia
 fortune
 four-four-two
 fox-news
-fox-sports
 globo
 goteborgs-posten
 gruenderszene
