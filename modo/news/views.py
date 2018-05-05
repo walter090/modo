@@ -56,8 +56,18 @@ class NewsView(ModelViewSet):
         article.delete()
         return Response({'message': '{0} from {1} is removed.'.format(title, site_name)})
 
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    def user_share_story(self, request, *args, **kwargs):
+        try:
+            article = self.get_object()
+        except PermissionDenied as pd:
+            return Response({'error': str(pd)})
+
+        article.shared_by.add(request.user)
+        return Response({'message': '{0} is shared'.format(article.title)})
+
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
-    def get_primary_key(self, request):
+    def get_primary_key(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         url = request.data['url']
         try:
