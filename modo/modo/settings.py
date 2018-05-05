@@ -159,7 +159,7 @@ CELERY_IMPORTS = ['news.management.tasks']
 CELERY_BEAT_SCHEDULE = {
     'pull_stories': {
         'task': 'news.management.tasks.pull_articles',
-        'schedule': crontab(minute=0, hour='*/2')
+        'schedule': crontab(minute=0, hour='*/3')
     },
     'update_sources': {
         'task': 'news.management.tasks.update_sources',
