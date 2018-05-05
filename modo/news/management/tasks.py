@@ -6,7 +6,7 @@ from celery import shared_task
 from newsapi import NewsApiClient
 
 from news.models import Article
-from .secret_constant import API_KEY
+from .secret_constants import API_KEY
 
 
 @shared_task()
