@@ -64,7 +64,22 @@ class NewsView(ModelViewSet):
             return Response({'error': str(pd)})
 
         article.shared_by.add(request.user)
-        return Response({'message': '{0} is shared'.format(article.title)})
+        return Response({'message': '"{}" is shared'.format(article.title)})
+
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    def save(self, request, *args, **kwargs):
+        try:
+            article = self.get_object()
+        except PermissionDenied as pd:
+            return Response({'error': str(pd)})
+
+        if article.saved_by.filter(identifier=request.user.identifier).count() == 0:
+            # Check if the article is already saved by current user.
+            article.saved_by.add(request.user)
+            return Response({'message': '"{}" is saved.'.format(article.title)})
+        else:
+            article.saved_by.remove(request.user)
+            return Response({'message': '"{}" is no longer saved.'.format(article.title)})
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request, *args, **kwargs):
