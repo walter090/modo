@@ -2,10 +2,10 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from news.serializers import ArticleHeadlineSerializer
 from person.management import constants
 from person.management.permissions import IsSelfOrAdmin
 from .forms import SignupForm
@@ -20,7 +20,7 @@ class HumanView(ModelViewSet):
     lookup_field = 'username'
 
     def get_permissions(self):
-        if self.action == 'list' or self.action == 'get_primary_key':
+        if self.action == 'list':
             permission_classes = [permissions.IsAdminUser]
         elif self.action == 'destroy' or self.action == 'partial_update':
             permission_classes = [IsSelfOrAdmin]
@@ -38,8 +38,8 @@ class HumanView(ModelViewSet):
             human = self.get_object()
             serializer = self.get_serializer(human)
             return Response(serializer.data)
-        except Http404:
-            return Response({'error': 'User does not exist.'})
+        except Http404 as e:
+            return Response({'error': str(e)})
 
     def create(self, request, *args, **kwargs):
         model_form = SignupForm(request.data)
@@ -56,8 +56,8 @@ class HumanView(ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         try:
             human = self.get_object()
-        except PermissionDenied as pd:
-            return Response({'error': str(pd)})
+        except Http404 as e:
+            return Response({'error': str(e)})
 
         updates = request.data
 
@@ -72,14 +72,25 @@ class HumanView(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         try:
             human = self.get_object()
-        except PermissionDenied as pd:
-            return Response({'error': str(pd)})
+        except Http404 as e:
+            return Response({'error': str(e)})
 
         email = human.email
         human.delete()
         return Response({'email': email})
 
-    @action(methods=['post'], detail=False)
+    @action(methods=['get'], detail=True, permission_classes=[IsSelfOrAdmin])
+    def saved(self, request, *args, **kwargs):
+        try:
+            human = self.get_object()
+        except Http404 as e:
+            return Response({'error': str(e)})
+
+        saved_articles = human.saved.all()
+        serializer = ArticleHeadlineSerializer(saved_articles, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request):
         queryset = self.get_queryset()
         email = request.data['email']
