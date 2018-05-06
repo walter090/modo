@@ -116,8 +116,8 @@ DATABASES = {
         'NAME': 'modo',
         'USER': HIDDEN_USER,
         'PASSWORD': HIDDEN_PASSWORD,
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': 'aa1e87raiqllf9x.cqxbp9pp7agz.us-west-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
