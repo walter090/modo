@@ -37,7 +37,6 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'webpack_loader',
     'oauth2_provider',
     'rest_framework_social_oauth2',
 ]
