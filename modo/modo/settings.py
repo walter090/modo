@@ -1,29 +1,26 @@
 import environ
 from celery.schedules import crontab
 
-from .settings_secret import *
-
 BASE_DIR = environ.Path(__file__) - 2
 
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
-if READ_DOT_ENV_FILE:
-    env_file = str(BASE_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
-    env.read_env(env_file)
-    print('env file loaded')
+env_file = str(BASE_DIR('.env'))
+print('Loading : {}'.format(env_file))
+env.read_env(env_file)
+print('env file loaded')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = HIDDEN_SECRET_KEY
+SECRET_KEY = env('HIDDEN_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['modo-dev.us-west-1.elasticbeanstalk.com']
+# ALLOWED_HOSTS = ['modo-dev.us-west-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = []
 
 # Application definition
 DJANGO_APPS = [
@@ -113,10 +110,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'modo',
-        'USER': HIDDEN_USER,
-        'PASSWORD': HIDDEN_PASSWORD,
-        'HOST': 'aa1e87raiqllf9x.cqxbp9pp7agz.us-west-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'USER': env('HIDDEN_USER'),
+        'PASSWORD': env('HIDDEN_PASSWORD'),
+        # 'HOST': 'aa1e87raiqllf9x.cqxbp9pp7agz.us-west-1.rds.amazonaws.com',
+        # 'PORT': '5432',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -147,12 +146,12 @@ PASSWORD_HASHERS = [
 ]
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = HIDDEN_EMAIL_HOST
-EMAIL_HOST_USER = HIDDEN_EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = HIDDEN_EMAIL_HOST_PASSWORD
-EMAIL_PORT = HIDDEN_EMAIL_PORT
+EMAIL_HOST = env('HIDDEN_EMAIL_HOST')
+EMAIL_HOST_USER = env('HIDDEN_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('HIDDEN_EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('HIDDEN_EMAIL_PORT')
 
-CELERY_BROKER_URL = HIDDEN_BROKER_URL
+CELERY_BROKER_URL = env('HIDDEN_BROKER_URL')
 CELERY_TIMEZONE = 'UTC'
 CELERY_IMPORTS = ['news.management.tasks']
 CELERY_BEAT_SCHEDULE = {
