@@ -10,3 +10,4 @@ modo/celerybeat-schedule.dat
 modo/celerybeat-schedule.dir
 modo/news/management/sources.csv
 venv/
+modo/zappa_settings.json
