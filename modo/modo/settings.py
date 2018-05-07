@@ -21,6 +21,8 @@ DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
+AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION')
+
 # Application definition
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -108,13 +110,11 @@ WSGI_APPLICATION = 'modo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'modo',
+        'NAME': env('DATABASE_NAME'),
         'USER': env('HIDDEN_USER'),
         'PASSWORD': env('HIDDEN_PASSWORD'),
-        # 'HOST': 'aa1e87raiqllf9x.cqxbp9pp7agz.us-west-1.rds.amazonaws.com',
-        # 'PORT': '5432',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
