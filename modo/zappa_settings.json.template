@@ -1,0 +1,21 @@
+{
+  "dev": {
+    "aws_region": "",
+    "django_settings": "modo.settings",
+    "profile_name": "",
+    "project_name": "modo",
+    "runtime": "python3.6",
+    "s3_bucket": "",
+    "slim_handler": "true",
+    "events": [
+      {
+        "function": "news.management.tasks.pull_articles",
+        "expressions": ["rate(3 hours)"]
+      },
+      {
+        "function": "news.management.tasks.update_sources",
+        "expressions": ["cron(0 0 L * ? *)"]
+      }
+    ]
+  }
+}
