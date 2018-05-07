@@ -18,6 +18,7 @@ SECRET_KEY = env('HIDDEN_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
+ADMIN_ENABLED = env.bool('ADMIN_ENABLED')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
