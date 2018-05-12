@@ -39,7 +39,7 @@ class HumanView(ModelViewSet):
             serializer = self.get_serializer(human)
             return Response(serializer.data)
         except Http404 as e:
-            return Response({'error': str(e)})
+            return Response({'errors': str(e)})
 
     def create(self, request, *args, **kwargs):
         model_form = SignupForm(request.data)
@@ -49,15 +49,16 @@ class HumanView(ModelViewSet):
             Human.objects.create_user(username=request.data['username'],
                                       email=request.data['email'],
                                       password=request.data['password'])
-            return Response(serializer.data['email'], status=201)
+            return Response({'email': serializer.data['email'],
+                             'username': serializer.data['username']})
         else:
-            return Response({'errors': model_form.errors}, status=400)
+            return Response({'errors': model_form.errors})
 
     def partial_update(self, request, *args, **kwargs):
         try:
             human = self.get_object()
         except Http404 as e:
-            return Response({'error': str(e)})
+            return Response({'errors': str(e)})
 
         updates = request.data
 
@@ -73,7 +74,7 @@ class HumanView(ModelViewSet):
         try:
             human = self.get_object()
         except Http404 as e:
-            return Response({'error': str(e)})
+            return Response({'errors': str(e)})
 
         email = human.email
         human.delete()
@@ -84,7 +85,7 @@ class HumanView(ModelViewSet):
         try:
             human = self.get_object()
         except Http404 as e:
-            return Response({'error': str(e)})
+            return Response({'errors': str(e)})
 
         saved_articles = human.saved.all()
         serializer = ArticleHeadlineSerializer(saved_articles, many=True)
@@ -95,7 +96,7 @@ class HumanView(ModelViewSet):
         try:
             human = self.get_object()
         except Http404 as e:
-            return Response({'error': str(e)})
+            return Response({'errors': str(e)})
 
         saved_articles = human.viewd.all()
         serializer = ArticleHeadlineSerializer(saved_articles, many=True)
@@ -108,5 +109,5 @@ class HumanView(ModelViewSet):
         try:
             human = get_object_or_404(queryset, email=email)
             return Response({'primary_key': human.identifier})
-        except Http404:
-            return Response({'error': 'User does not exist.'})
+        except Http404 as e:
+            return Response({'errors': str(e)})
