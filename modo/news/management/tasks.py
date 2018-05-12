@@ -10,7 +10,7 @@ from .secret_constants import API_KEY
 
 
 @shared_task()
-def pull_articles():
+def pull_articles(*args):
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -40,8 +40,8 @@ def pull_articles():
 
 
 @shared_task()
-def update_sources():
-    # Update news sources one a week.
+def update_sources(*args):
+    # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
     sources = api.get_sources()['sources']
     sources = [source['id'] for source in sources]
