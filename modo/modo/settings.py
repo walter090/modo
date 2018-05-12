@@ -10,7 +10,6 @@ print('Loading : {}'.format(env_file))
 env.read_env(env_file)
 print('env file loaded')
 
-# Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
