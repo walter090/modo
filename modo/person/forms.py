@@ -31,7 +31,7 @@ class SignupForm(forms.ModelForm):
     class Meta:
         model = Human
         widgets = {'password': forms.PasswordInput()}
-        fields = ('email', 'password', 'first_name', 'last_name')
+        fields = ('email', 'username', 'password', 'first_name', 'last_name')
 
 
 class SignInForm(forms.Form):
