@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -41,6 +42,7 @@ class HumanView(ModelViewSet):
         except Http404 as e:
             return Response({'errors': str(e)})
 
+    @ensure_csrf_cookie
     def create(self, request, *args, **kwargs):
         model_form = SignupForm(request.data)
         serializer = self.get_serializer(data=request.data)
@@ -54,6 +56,7 @@ class HumanView(ModelViewSet):
         else:
             return Response({'errors': model_form.errors})
 
+    @ensure_csrf_cookie
     def partial_update(self, request, *args, **kwargs):
         try:
             human = self.get_object()
