@@ -136,6 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+    },
+    'REFRESH_TOKEN_EXPIRE_SECONDS': 604800,
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 86400
+}
+
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
