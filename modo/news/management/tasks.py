@@ -19,10 +19,10 @@ def pull_articles(*args):
     with open(os.path.join(base, 'sources.txt'), 'r') as file:
         sources = file.read().split('\n')
 
-    for chunk_i in range(len(sources) % 10):
+    for chunk_i in range(len(sources) // 10):
         # Pull multiple sources at a time to minimize number of requests.
         source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
-
+        print(source_chunk)
         try:
             articles = api.get_top_headlines(sources=source_chunk,
                                              page_size=100,
