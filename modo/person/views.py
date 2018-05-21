@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import permissions
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -10,6 +11,7 @@ from news.serializers import ArticleHeadlineSerializer
 from person.management import constants
 from person.management.permissions import IsSelfOrAdmin
 from .forms import SignupForm
+from .management.paginators import UserPaginator
 from .models import Human
 from .serializers import HumanSerializer
 
@@ -17,8 +19,12 @@ from .serializers import HumanSerializer
 class HumanView(ModelViewSet):
     queryset = Human.objects.all()
     serializer_class = HumanSerializer
+    pagination_class = UserPaginator
+    filter_backends = [SearchFilter, OrderingFilter]
 
     lookup_field = 'username'
+    search_fields = ['username', 'email', ]
+    ordering = ['-registered_since', 'username']
 
     def get_permissions(self):
         if self.action == 'list':
@@ -28,11 +34,6 @@ class HumanView(ModelViewSet):
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
     def retrieve(self, request, **kwargs):
         try:
