@@ -53,7 +53,8 @@ REST_FRAMEWORK = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'news.management.paginators.ArticlePaginator',
 }
 
 AUTHENTICATION_BACKENDS = (
