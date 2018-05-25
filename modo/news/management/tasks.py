@@ -3,6 +3,7 @@ import re
 from requests.exceptions import Timeout
 
 from celery import shared_task
+from goose3.network import NetworkError
 from newsapi import NewsApiClient
 
 from news.models import Article
@@ -19,24 +20,27 @@ def pull_articles(*args):
     with open(os.path.join(base, 'sources.txt'), 'r') as file:
         sources = file.read().split('\n')
 
+    articles = []
     for chunk_i in range(len(sources) // 10):
         # Pull multiple sources at a time to minimize number of requests.
         source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
-        print(source_chunk)
         try:
-            articles = api.get_top_headlines(sources=source_chunk,
-                                             page_size=100,
-                                             language='en')['articles']
+            articles += api.get_top_headlines(sources=source_chunk,
+                                              page_size=100,
+                                              language='en')['articles']
         except Timeout:
             continue
 
-        for article in articles:
+    for article in articles:
+        try:
             Article.objects.create_article(
                 url=article['url'],
                 authors=article['author'],
                 publish_time=article['publishedAt'],
                 title_image=article['urlToImage']
             )
+        except NetworkError:
+            continue
 
 
 @shared_task()
