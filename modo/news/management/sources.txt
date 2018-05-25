@@ -7,7 +7,6 @@ argaam
 ars-technica
 ary-news
 associated-press
-australian-financial-review
 axios
 bbc-news
 bbc-sport
