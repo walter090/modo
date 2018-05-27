@@ -11,7 +11,7 @@ from .secret_constants import API_KEY
 
 
 @shared_task()
-def pull_articles(*args):
+def pull_articles(num_sources=2, *args):
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -21,13 +21,12 @@ def pull_articles(*args):
         sources = file.read().split('\n')
 
     articles = []
-    for chunk_i in range(len(sources) // 10):
+    for chunk_i in range(len(sources) // num_sources):
         # Pull multiple sources at a time to minimize number of requests.
-        source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
+        source_chunk = ', '.join(sources[chunk_i * num_sources: chunk_i * num_sources + num_sources])
         try:
             articles += api.get_top_headlines(sources=source_chunk,
-                                              page_size=100,
-                                              language='en')['articles']
+                                              page_size=100)['articles']
         except Timeout:
             continue
 
