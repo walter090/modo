@@ -36,7 +36,9 @@ def pull_articles(num_sources=2, *args):
                 url=article['url'],
                 authors=article['author'],
                 publish_time=article['publishedAt'],
-                title_image=article['urlToImage']
+                title_image=article['urlToImage'],
+                title=article['title'],
+                description=article['description']
             )
         except NetworkError:
             continue

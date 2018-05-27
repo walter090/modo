@@ -14,10 +14,13 @@ class ArticleManager(Manager):
     use_in_migration = True
 
     def create_article(self, url, authors,
-                       publish_time, title_image):
+                       publish_time, title_image, description,
+                       title):
         """Function for creating a new article.
 
         Args:
+            title: str, Title of the article.
+            description: str, Description of the article.
             url: str, URL to the article.
             authors: str, Authors' names.
             publish_time: str, Time of publishing.
@@ -32,9 +35,9 @@ class ArticleManager(Manager):
 
         article_info = goose.extract(url=url)
         article_info = article_info.infos
+        article.description = description
+        article.title = title
 
-        article.title = self._extract_section(article_info, 'title', None)
-        article.description = self._extract_section(article_info['opengraph'], 'description', None)
         article.images = title_image
         article.text = self._extract_section(article_info, 'cleaned_text', None)
 
