@@ -41,5 +41,6 @@ class ArticleHeadlineSerializer(serializers.HyperlinkedModelSerializer):
             'title',
             'description',
             'site_name',
+            'domain',
             'tags'
         )
