@@ -39,6 +39,7 @@ class ArticleManager(Manager):
         article.title = title
 
         article.images = title_image
+        article.domain = article_info['domain']
         article.text = self._extract_section(article_info, 'cleaned_text', None)
 
         try:

@@ -23,6 +23,7 @@ class Article(models.Model):
     tags = models.TextField(_('tags'), null=True, blank=True)
     topic = models.CharField(_('category'), max_length=20, default='general')
     images = models.TextField(_('images'), null=True, blank=True)
+    domain = models.CharField(_('domain'), max_length=50, default='google.com')
 
     saved_by = models.ManyToManyField(Human, related_name='saved', blank=True)
     viewed_by = models.ManyToManyField(Human, related_name='viewed', blank=True)
