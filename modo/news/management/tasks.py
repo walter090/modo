@@ -11,7 +11,7 @@ from .secret_constants import API_KEY
 
 
 @shared_task()
-def pull_articles(num_sources=2, *args):
+def pull_articles(*args):
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -21,9 +21,9 @@ def pull_articles(num_sources=2, *args):
         sources = file.read().split('\n')
 
     articles = []
-    for chunk_i in range(len(sources) // num_sources):
+    for chunk_i in range(len(sources) // 2):
         # Pull multiple sources at a time to minimize number of requests.
-        source_chunk = ', '.join(sources[chunk_i * num_sources: chunk_i * num_sources + num_sources])
+        source_chunk = ', '.join(sources[chunk_i * 2: chunk_i * 2 + 2])
         try:
             articles += api.get_top_headlines(sources=source_chunk,
                                               page_size=100)['articles']
