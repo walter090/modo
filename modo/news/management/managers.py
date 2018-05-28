@@ -76,8 +76,9 @@ class ArticleManager(Manager):
         try:
             article.full_clean()
             article.save()
+            print('Fetched article "{}"'.format(article.title))
         except (ValidationError, IntegrityError):
-            print('Article already in database.')
+            print('Article "{}" already in database.'.format(article.title))
             pass
 
     @staticmethod
