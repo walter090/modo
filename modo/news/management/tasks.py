@@ -40,7 +40,7 @@ def pull_articles(*args):
                 title=article['title'],
                 description=article['description']
             )
-        except NetworkError:
+        except (NetworkError, UnicodeDecodeError):
             continue
 
 
