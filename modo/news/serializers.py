@@ -33,6 +33,7 @@ class ArticleHeadlineSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
         fields = (
+            'identifier',
             'url',
             'authors',
             'publish_time',
