@@ -78,7 +78,7 @@ class ArticleManager(Manager):
             article.save()
             print('Fetched article "{}" from {}'.format(article.title, article.site_name))
         except ValidationError as ve:
-            print('{} while feting {} from {}'.format(ve, article.title, article.site_name))
+            print('{} while fetching {} from {}'.format(ve, article.title, article.site_name))
         except IntegrityError:
             print('Article "{}" from {} already in database.'.format(article.title, article.site_name))
             pass
