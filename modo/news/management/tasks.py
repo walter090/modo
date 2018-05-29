@@ -3,7 +3,6 @@ import re
 from requests.exceptions import Timeout
 
 from celery import shared_task
-from goose3.network import NetworkError
 from newsapi import NewsApiClient
 
 from news.models import Article
@@ -11,7 +10,7 @@ from .secret_constants import API_KEY
 
 
 @shared_task()
-def pull_articles(*args):
+def pull_articles():
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -40,12 +39,12 @@ def pull_articles(*args):
                 title=article['title'],
                 description=article['description']
             )
-        except (NetworkError, UnicodeDecodeError):
+        except:
             continue
 
 
 @shared_task()
-def update_sources(*args):
+def update_sources():
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
     sources = api.get_sources()['sources']
