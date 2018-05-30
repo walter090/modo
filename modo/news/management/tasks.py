@@ -11,7 +11,7 @@ from .secret_constants import API_KEY
 
 
 @shared_task()
-@task()
+@task
 def pull_articles(*args):
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
@@ -46,7 +46,7 @@ def pull_articles(*args):
 
 
 @shared_task()
-@task()
+@task
 def update_sources(*args):
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
