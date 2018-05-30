@@ -4,13 +4,15 @@ from requests.exceptions import Timeout
 
 from celery import shared_task
 from newsapi import NewsApiClient
+from zappa.async import task
 
 from news.models import Article
 from .secret_constants import API_KEY
 
 
 @shared_task()
-def pull_articles():
+@task()
+def pull_articles(*args):
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -44,7 +46,8 @@ def pull_articles():
 
 
 @shared_task()
-def update_sources():
+@task()
+def update_sources(*args):
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
     sources = api.get_sources()['sources']
