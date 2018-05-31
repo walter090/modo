@@ -49,7 +49,7 @@ def pull_articles():
         except:
             continue
     end = int(round(time.time()))
-    print(end - start)
+    print('Task completed in {} seconds'.format(end - start))
 
 
 def update_sources_decoy(*args):
