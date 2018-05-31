@@ -31,6 +31,12 @@ class ArticleManager(Manager):
         """
         article = self.model(url=url, authors=authors)
 
+        try:
+            article.full_clean()
+        except ValidationError:
+            print('Article "{}" already in database.'.format(title))
+            return
+
         goose = Goose()
 
         article_info = goose.extract(url=url)
@@ -78,10 +84,8 @@ class ArticleManager(Manager):
             article.full_clean()
             article.save()
             print('Fetched article "{}" from {}'.format(article.title, article.site_name))
-        except ValidationError as ve:
-            print('{} while fetching {} from {}'.format(ve, article.title, article.site_name))
-        except IntegrityError:
-            print('Article "{}" from {} already in database.'.format(article.title, article.site_name))
+        except IntegrityError as ie:
+            print('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
             pass
 
     @staticmethod
