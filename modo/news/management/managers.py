@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from goose3 import Goose
 
 from person.models import Human
+from news.models import Article
 
 
 class ArticleManager(Manager):
@@ -29,13 +30,11 @@ class ArticleManager(Manager):
         Returns:
             None.
         """
-        article = self.model(url=url, authors=authors)
-
-        try:
-            article.full_clean()
-        except ValidationError:
-            print('Article "{}" already in database.'.format(title))
+        if Article.objects.filter(url=url).count() == 0:
+            print('Article "{}" already in database'.format(title))
             return
+
+        article = self.model(url=url, authors=authors)
 
         goose = Goose()
 
@@ -84,6 +83,8 @@ class ArticleManager(Manager):
             article.full_clean()
             article.save()
             print('Fetched article "{}" from {}'.format(article.title, article.site_name))
+        except ValidationError:
+            print('Article "{}" from {} already in database.'.format(article.title, article.site_name))
         except IntegrityError as ie:
             print('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
             pass
