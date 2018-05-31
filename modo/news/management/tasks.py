@@ -2,17 +2,22 @@ import os
 import re
 from requests.exceptions import Timeout
 
-from celery import shared_task
 from newsapi import NewsApiClient
 from zappa.async import task
 
 from news.models import Article
 from .secret_constants import API_KEY
 
+import time
 
-@shared_task()
+
+def pull_articles_decoy(*args):
+    pull_articles()
+
+
 @task
-def pull_articles(*args):
+def pull_articles():
+    start = int(round(time.time()))
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -22,12 +27,12 @@ def pull_articles(*args):
         sources = file.read().split('\n')
 
     articles = []
-    for chunk_i in range(len(sources) // 2):
+    for chunk_i in range(len(sources) // 10):
         # Pull multiple sources at a time to minimize number of requests.
-        source_chunk = ', '.join(sources[chunk_i * 2: chunk_i * 2 + 2])
+        source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
         try:
             articles += api.get_top_headlines(sources=source_chunk,
-                                              page_size=100)['articles']
+                                              page_size=50)['articles']
         except Timeout:
             continue
 
@@ -43,14 +48,19 @@ def pull_articles(*args):
             )
         except:
             continue
+    end = int(round(time.time()))
+    print(end - start)
 
 
-@shared_task()
+def update_sources_decoy(*args):
+    update_sources()
+
+
 @task
-def update_sources(*args):
+def update_sources():
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
-    sources = api.get_sources()['sources']
+    sources = api.get_sources(language='en')['sources']
     sources = [source['id'] for source in sources]
     # Exclude Google News
     regex = re.compile(r'^(?!(google-news|financial-times|fox-sports|australian-financial-review))')
