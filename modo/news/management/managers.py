@@ -8,7 +8,6 @@ from django.template.defaultfilters import slugify
 from goose3 import Goose
 
 from person.models import Human
-from news.models import Article
 
 
 class ArticleManager(Manager):
@@ -30,7 +29,7 @@ class ArticleManager(Manager):
         Returns:
             None.
         """
-        if Article.objects.filter(url=url).count() == 0:
+        if self.filter(url=url).count():
             print('Article "{}" already in database'.format(title))
             return
 
