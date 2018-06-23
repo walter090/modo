@@ -68,8 +68,12 @@ class ArticleManager(Manager):
 
         article.slug = slugify(article.title) if article.title else None
 
+        current_time = datetime.datetime.now()
         try:
-            article.publish_time = parser.parse(publish_time)
+            publish_time = parser.parse(publish_time)
+
+            article.publish_time = publish_time if publish_time <= current_time\
+                else current_time
         except (ValueError, OverflowError, TypeError):
             print('Invalid datetime format.')
             article.publish_time = datetime.datetime.now()
