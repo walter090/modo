@@ -10,11 +10,11 @@
     "events": [
       {
         "function": "news.management.tasks.pull_articles",
-        "expressions": ["rate(3 hours)"]
+        "expression": "rate(3 hours)"
       },
       {
         "function": "news.management.tasks.update_sources",
-        "expressions": ["cron(0 0 L * ? *)"]
+        "expression": "cron(0 0 L * ? *)"
       }
     ]
   }
