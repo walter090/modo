@@ -60,6 +60,13 @@ class NewsView(ModelViewSet):
         article.delete()
         return Response({'message': '{0} from {1} is removed.'.format(title, site_name)})
 
+    def retrieve(self, request, *args, **kwargs):
+        article = self.get_object()
+        article_data = self.get_serializer(article).data
+        article_data['views'] = article.viewed_by.count()
+        article_data['saves'] = article.saved_by.count()
+        return Response(article_data)
+
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def share(self, request, *args, **kwargs):
         try:
