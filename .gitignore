@@ -11,3 +11,8 @@ modo/celerybeat-schedule.dir
 modo/news/management/sources.csv
 venv/
 modo/zappa_settings.json
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
