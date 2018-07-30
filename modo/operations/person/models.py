@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from modo.util import auxiliary
-from person.management.managers import HumanManager
+from .management.managers import HumanManager
 
 
 class Human(AbstractBaseUser, PermissionsMixin):

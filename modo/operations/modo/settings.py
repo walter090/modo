@@ -161,20 +161,6 @@ EMAIL_HOST_USER = env('HIDDEN_EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('HIDDEN_EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('HIDDEN_EMAIL_PORT')
 
-CELERY_BROKER_URL = env('BROKER_URL')
-CELERY_TIMEZONE = 'UTC'
-CELERY_IMPORTS = ['news.management.tasks']
-CELERY_BEAT_SCHEDULE = {
-    'pull_stories': {
-        'task': 'news.management.tasks.pull_articles',
-        'schedule': crontab(minute=0, hour='*/3')
-    },
-    'update_sources': {
-        'task': 'news.management.tasks.update_sources',
-        'schedule': crontab(minute=0, hour=0, day_of_week='sun')
-    },
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 

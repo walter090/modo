@@ -3,19 +3,13 @@ import re
 from requests.exceptions import Timeout
 
 from newsapi import NewsApiClient
-from zappa.async import task
 
-from news.models import Article
+from operations.news.models import Article
 from .secret_constants import API_KEY
 
 import time
 
 
-def pull_articles_decoy(*args):
-    pull_articles()
-
-
-@task
 def pull_articles():
     start = int(round(time.time()))
     # Pull news stories every 2 hours.
@@ -56,7 +50,6 @@ def update_sources_decoy(*args):
     update_sources()
 
 
-@task
 def update_sources():
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)

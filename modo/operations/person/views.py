@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from news.serializers import ArticleHeadlineSerializer
-from person.management import constants
-from person.management.permissions import IsSelfOrAdmin
+from .management import constants
+from .management.permissions import IsSelfOrAdmin
 from .forms import SignupForm
 from .management.paginators import UserPaginator
 from .models import Human
