@@ -1,5 +1,4 @@
 import environ
-from celery.schedules import crontab
 
 BASE_DIR = environ.Path(__file__) - 2
 
@@ -118,6 +117,21 @@ DATABASES = {
         'HOST': env('DATABASE_HOST'),
         'PORT': env('DATABASE_PORT'),
     }
+}
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+CELERY_BROKER_URL = "sqs://{}:{}@".format(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_DEFAULT_QUEUE = 'modo_queue'
+CELERY_RESULT_BACKEND = None
+CELERY_BROKER_TRANSPORT = 'sqs'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'region': 'us-west-2',
+    'polling_interval': 20,
 }
 
 # Password validation
