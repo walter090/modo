@@ -1,0 +1,5 @@
+version: 1
+cron:
+ — name: "pull_article"
+   url: "/pull_article"
+   schedule: "0 */2 * * *"
