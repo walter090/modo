@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .management.paginators import ArticlePaginator
+from .management import tasks
 from .models import Article
 from .serializers import ArticleSerializer, ArticleCreationSerializer, ArticleHeadlineSerializer
 
@@ -116,3 +117,11 @@ class NewsView(ModelViewSet):
             return Response({'primary_key': article.identifier})
         except Http404 as e:
             return Response({'error': str(e)})
+
+    @action(methods=['post'], detail=False)
+    def pull_articles(self, request, *args, **kwargs):
+        tasks.pull_articles()
+
+    @action(methods=['post'], detail=False)
+    def update_sources(self, request, *args, **kwargs):
+        tasks.update_sources()
