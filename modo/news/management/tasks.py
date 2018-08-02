@@ -2,23 +2,14 @@ import os
 import re
 from requests.exceptions import Timeout
 
-from celery import shared_task
-from newsapi import NewsApiClient
+from newsapi.newsapi_client import NewsApiClient
 
 from news.models import Article
 from .secret_constants import API_KEY
 
 import time
-import datetime
 
 
-@shared_task
-def show_time():
-    print(datetime.datetime.now())
-    return True
-
-
-@shared_task
 def pull_articles():
     start = int(round(time.time()))
     # Pull news stories every 2 hours.
@@ -55,7 +46,6 @@ def pull_articles():
     print('Task completed in {} seconds'.format(end - start))
 
 
-@shared_task
 def update_sources():
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
