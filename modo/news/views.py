@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -118,10 +119,12 @@ class NewsView(ModelViewSet):
         except Http404 as e:
             return Response({'error': str(e)})
 
+    @csrf_exempt
     @action(methods=['post'], detail=False)
     def pull_articles(self, request, *args, **kwargs):
         tasks.pull_articles()
 
+    @csrf_exempt
     @action(methods=['post'], detail=False)
     def update_sources(self, request, *args, **kwargs):
         tasks.update_sources()
