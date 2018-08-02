@@ -87,6 +87,7 @@ Pillow==5.1.0
 placebo==0.8.1
 prompt-toolkit==1.0.15
 psycopg2==2.7.4
+psycopg2-binary==2.7.5
 ptyprocess==0.5.2
 pyarrow==0.9.0
 pycparser==2.18
