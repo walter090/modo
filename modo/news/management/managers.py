@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from dateutil import parser
 from django.core.exceptions import ValidationError
@@ -9,6 +10,8 @@ from django.utils import timezone
 from goose3 import Goose
 
 from person.models import Human
+
+logger = logging.getLogger(__name__)
 
 
 class ArticleManager(Manager):
@@ -31,7 +34,7 @@ class ArticleManager(Manager):
             None.
         """
         if self.filter(url=url).count():
-            print('Article "{}" already in database'.format(title))
+            logger.info('Article "{}" already in database'.format(title))
             return
 
         article = self.model(url=url, authors=authors)
@@ -76,7 +79,7 @@ class ArticleManager(Manager):
             article.publish_time = publish_time if publish_time <= current_time\
                 else current_time
         except (ValueError, OverflowError, TypeError):
-            print('Invalid datetime format.')
+            logger.info('Invalid datetime format from source.')
             article.publish_time = datetime.datetime.now()
 
         article.tweets = ', '.join(tweets) if tweets and len(tweets) else None
@@ -86,11 +89,11 @@ class ArticleManager(Manager):
         try:
             article.full_clean()
             article.save()
-            print('Fetched article "{}" from {}'.format(article.title, article.site_name))
+            logger.info('Fetched article "{}" from {}'.format(article.title, article.site_name))
         except ValidationError:
-            print('Article "{}" from {} already in database.'.format(article.title, article.site_name))
+            logger.info('Article "{}" from {} already in database.'.format(article.title, article.site_name))
         except IntegrityError as ie:
-            print('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
+            logger.info('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
             pass
 
     @staticmethod
