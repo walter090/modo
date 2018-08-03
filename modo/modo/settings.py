@@ -9,7 +9,7 @@ print('Loading : {}'.format(env_file))
 env.read_env(env_file)
 print('env file loaded')
 
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
