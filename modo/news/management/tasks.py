@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from requests.exceptions import Timeout
@@ -8,6 +9,8 @@ from news.models import Article
 from .secret_constants import API_KEY
 
 import time
+
+logger = logging.getLogger(__name__)
 
 
 def pull_articles():
@@ -43,7 +46,7 @@ def pull_articles():
         except:
             continue
     end = int(round(time.time()))
-    print('Task completed in {} seconds'.format(end - start))
+    logging.info('Task completed in {} seconds'.format(end - start))
 
 
 def update_sources():
