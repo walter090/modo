@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db.models import Manager
 from django.template.defaultfilters import slugify
+from django.utils import timezone
 from goose3 import Goose
 
 from person.models import Human
@@ -68,7 +69,7 @@ class ArticleManager(Manager):
 
         article.slug = slugify(article.title) if article.title else None
 
-        current_time = datetime.datetime.now()
+        current_time = timezone.now()
         try:
             publish_time = parser.parse(publish_time)
 
