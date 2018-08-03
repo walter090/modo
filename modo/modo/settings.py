@@ -1,4 +1,5 @@
 import environ
+import logging
 
 BASE_DIR = environ.Path(__file__) - 2
 
@@ -7,7 +8,7 @@ env = environ.Env()
 env_file = str(BASE_DIR('.env'))
 env.read_env(env_file)
 
-APPEND_SLASH = True
+logging.basicConfig(level=env('LOG_LEVEL'))
 
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
