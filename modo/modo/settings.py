@@ -9,6 +9,8 @@ print('Loading : {}'.format(env_file))
 env.read_env(env_file)
 print('env file loaded')
 
+APPEND_SLASH = False
+
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
