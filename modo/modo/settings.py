@@ -8,7 +8,7 @@ env = environ.Env()
 env_file = str(BASE_DIR('.env'))
 env.read_env(env_file)
 
-logging.basicConfig(level=env('LOG_LEVEL'))
+logging.basicConfig(filename=env('LOG_FILE'), level=env('LOG_LEVEL'))
 
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
