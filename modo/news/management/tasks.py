@@ -26,7 +26,7 @@ def pull_articles():
         source_chunk = ', '.join(sources[chunk_i * 10: chunk_i * 10 + 10])
         try:
             articles += api.get_top_headlines(sources=source_chunk,
-                                              page_size=50)['articles']
+                                              page_size=100)['articles']
         except Timeout:
             continue
 
