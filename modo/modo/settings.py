@@ -37,6 +37,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'oauth2_provider',
     'rest_framework_social_oauth2',
+    'storages',
 ]
 
 LOCAL_APPS = [
@@ -120,9 +121,6 @@ DATABASES = {
     }
 }
 
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-
 # CELERY_BROKER_URL = "sqs://{}:{}@".format(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_RESULT_SERIALIZER = 'json'
@@ -191,12 +189,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '{}.s3.amazonaws.com'.format(AWS_STORAGE_BUCKET_NAME)
+AWS_STATIC_LOCATION = env('AWS_STATIC_LOCATION')
 
-STATIC_URL = '/static/'
+STATIC_URL = 'https://{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 STATIC_ROOT = BASE_DIR('staticfiles')
 STATICFILES_DIRS = (
     str(BASE_DIR.path('static')),
 )
+'storages.backends.s3boto3.S3Boto3Storage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR('media'))
