@@ -8,7 +8,7 @@ env = environ.Env()
 env_file = str(BASE_DIR('.env'))
 env.read_env(env_file)
 
-logging.basicConfig(handlers=[logging.FileHandler(env('LOG_FILE'), 'w', 'utf-8')], level=env('LOG_LEVEL'))
+# logging.basicConfig(handlers=[logging.FileHandler(env('LOG_FILE'), 'w', 'utf-8')], level=env('LOG_LEVEL'))
 
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -197,10 +197,7 @@ AWS_STATIC_LOCATION = env('AWS_STATIC_LOCATION')
 
 STATIC_URL = 'https://{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 STATIC_ROOT = BASE_DIR('staticfiles')
-STATICFILES_DIRS = (
-    str(BASE_DIR.path('static')),
-)
-'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR('media'))
