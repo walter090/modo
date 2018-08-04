@@ -123,8 +123,10 @@ class NewsView(ModelViewSet):
     @action(methods=['post'], detail=False)
     def pull_articles(self, request, *args, **kwargs):
         tasks.pull_articles()
+        return Response({})
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
     def update_sources(self, request, *args, **kwargs):
         tasks.update_sources()
+        return Response({})
