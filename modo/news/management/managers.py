@@ -89,11 +89,10 @@ class ArticleManager(Manager):
         try:
             article.full_clean()
             article.save()
-            logger.info('Fetched article "{}" from {}'.format(article.title, article.site_name))
         except ValidationError:
-            logger.info('Article "{}" from {} already in database.'.format(article.title, article.site_name))
+            pass
         except IntegrityError as ie:
-            logger.info('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
+            logger.debug('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
             pass
 
     @staticmethod
