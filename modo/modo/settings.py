@@ -1,5 +1,6 @@
 import environ
 import logging
+import requests
 
 BASE_DIR = environ.Path(__file__) - 2
 
@@ -9,7 +10,6 @@ env_file = str(BASE_DIR('.env'))
 env.read_env(env_file)
 
 logging.basicConfig(handlers=[logging.FileHandler(env('LOG_FILE'), 'w', 'utf-8')], level=env('LOG_LEVEL'))
-
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -20,6 +20,13 @@ DEBUG = env.bool('DEBUG')
 ADMIN_ENABLED = env.bool('ADMIN_ENABLED')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+
+try:
+    internal_ip = requests.get('http://instance-data/latest/meta-data/local-ipv4').text
+except requests.exceptions.ConnectionError:
+    pass
+else:
+    ALLOWED_HOSTS.append(internal_ip)
 
 AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION')
 
