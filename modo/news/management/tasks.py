@@ -46,7 +46,7 @@ def pull_articles():
         except:
             continue
     end = int(round(time.time()))
-    logging.info('Task completed in {} seconds'.format(end - start))
+    logger.info('Task completed in {} seconds'.format(end - start))
 
 
 def update_sources():
