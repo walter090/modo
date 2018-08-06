@@ -22,5 +22,5 @@ urlpatterns = [
     path('user/', include('person.urls')),
     path('auth/', include('rest_framework_social_oauth2.urls')),
     path('news/', include('news.urls')),
-    path('', include_docs_urls('Modo News API'))
+    path('', include_docs_urls('Modo API Doc'))
 ]
