@@ -13,8 +13,17 @@ import time
 logger = logging.getLogger(__name__)
 
 
+def log_completion_time(task):
+    def logged_task():
+        start = int(round(time.time()))
+        task()
+        end = int(round(time.time()))
+        logger.info('Task completed in {} seconds'.format(end - start))
+    return logged_task()
+
+
+@log_completion_time
 def pull_articles():
-    start = int(round(time.time()))
     # Pull news stories every 2 hours.
     api = NewsApiClient(api_key=API_KEY)
 
@@ -45,10 +54,9 @@ def pull_articles():
             )
         except:
             continue
-    end = int(round(time.time()))
-    logger.info('Task completed in {} seconds'.format(end - start))
 
 
+@log_completion_time
 def update_sources():
     # Update news sources once a month.
     api = NewsApiClient(api_key=API_KEY)
