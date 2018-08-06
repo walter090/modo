@@ -14,6 +14,37 @@ from .serializers import ArticleSerializer, ArticleCreationSerializer, ArticleHe
 
 
 class NewsView(ModelViewSet):
+    """
+    retrieve:
+    Return a given news article according to ID.
+
+    create:
+    Create a new news article. Only admin can perform this action.
+
+    delete:
+    Delete a news article instance. Only admin can perform this action.
+
+    list:
+    List all news articles 40 per page.
+
+    share:
+    Add given article to the shared articles list of authenticated user.
+
+    save:
+    Save the given article for authenticated user.
+
+    view:
+    Add the article to authenticated user's viewed articles.
+
+    get_primary_key:
+    Get the article ID given the url of article source.
+
+    pull_articles:
+    Pull latest news articles from the internet.
+
+    update_sources:
+    Update list of news sources.
+    """
     queryset = Article.objects.defer('text', 'tweets').order_by('-publish_time')
     pagination_class = ArticlePaginator
 
@@ -28,7 +59,9 @@ class NewsView(ModelViewSet):
     def get_permissions(self):
         if self.action == 'destroy' \
                 or self.action == 'partial_update' \
-                or self.action == 'create':
+                or self.action == 'create' \
+                or self.action == 'pull_articles' \
+                or self.action == 'update_sources':
             permission_classes = [permissions.IsAdminUser]
         else:
             permission_classes = [permissions.AllowAny]
