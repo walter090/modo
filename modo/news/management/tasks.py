@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 def log_completion_time(task):
-    def logged_task():
+    def task_logged():
         start = int(round(time.time()))
         task()
         end = int(round(time.time()))
         logger.info('Task completed in {} seconds'.format(end - start))
-    return logged_task()
+    return task_logged()
 
 
 @log_completion_time
