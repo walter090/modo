@@ -34,7 +34,6 @@ class ArticleManager(Manager):
             None.
         """
         if self.filter(url=url).count():
-            logger.info('Article "{}" already in database'.format(title))
             return
 
         article = self.model(url=url, authors=authors)
@@ -79,8 +78,7 @@ class ArticleManager(Manager):
             article.publish_time = publish_time if publish_time <= current_time\
                 else current_time
         except (ValueError, OverflowError, TypeError):
-            logger.info('Invalid datetime format from source.')
-            article.publish_time = datetime.datetime.now()
+            article.publish_time = current_time
 
         article.tweets = ', '.join(tweets) if tweets and len(tweets) else None
         article.videos = ', '.join([video['src'] for video in videos]) if videos and len(videos) else None
@@ -92,7 +90,7 @@ class ArticleManager(Manager):
         except ValidationError:
             pass
         except IntegrityError as ie:
-            logger.debug('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
+            logger.warning('{} while fetching {} from {}'.format(ie, article.title, article.site_name))
             pass
 
     @staticmethod
