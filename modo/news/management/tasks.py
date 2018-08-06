@@ -1,14 +1,13 @@
 import logging
 import os
 import re
-from requests.exceptions import Timeout
+import time
 
 from newsapi.newsapi_client import NewsApiClient
+from requests.exceptions import Timeout
 
 from news.models import Article
 from .secret_constants import API_KEY
-
-import time
 
 logger = logging.getLogger(__name__)
 
