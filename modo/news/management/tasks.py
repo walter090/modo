@@ -13,12 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 def log_completion_time(task):
+    """Log time needed to complete scheduled task
+
+    Args:
+        task: function, Task to log.
+
+    Returns:
+        task_logged
+    """
     def task_logged():
         start = int(round(time.time()))
         task()
         end = int(round(time.time()))
         logger.info('Task completed in {} seconds'.format(end - start))
-    return task_logged()
+    return task_logged
 
 
 @log_completion_time
