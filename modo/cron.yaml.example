@@ -1,8 +1,8 @@
 version: 1
 cron:
  - name: "pull_articles"
-   url: "/task/"
+   url: "/news/task/"
    schedule: "0 */2 * * *"
  - name: "update_sources"
-   url: "/another_task/"
+   url: "/news/another_task/"
    schedule: "0 0 1 * 0"
