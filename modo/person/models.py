@@ -28,7 +28,8 @@ class Human(AbstractBaseUser, PermissionsMixin):
     profile_pic = models.ImageField(_('profile picture'), upload_to='pic/',
                                     null=True, blank=True)
 
-    settings = JSONField(null=True)
+    settings = JSONField(default=dict)
+    interests = JSONField(default=dict)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
