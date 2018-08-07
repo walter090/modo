@@ -112,7 +112,7 @@ class NewsView(ModelViewSet):
         article.shared_by.add(request.user)
         return Response({'message': '"{}" is shared'.format(article.title)})
 
-    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def save(self, request, *args, **kwargs):
         try:
             article = self.get_object()
@@ -137,10 +137,7 @@ class NewsView(ModelViewSet):
         if article.viewed_by.filter(identifier=request.user.identifier).count() == 0:
             # Check if the article is already viewed by current user.
             article.viewed_by.add(request.user)
-            return Response({'message': '"{}" is saved.'.format(article.title)})
-        else:
-            article.viewed_by.remove(request.user)
-            return Response({'message': '"{}" is no longer saved.'.format(article.title)})
+            return Response({'message': '"{}" is viewd.'.format(article.title)})
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request, *args, **kwargs):
