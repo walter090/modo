@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.postgres.fields import JSONField
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -26,6 +27,8 @@ class Human(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(_('staff status'), default=False)
     profile_pic = models.ImageField(_('profile picture'), upload_to='pic/',
                                     null=True, blank=True)
+
+    settings = JSONField(null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
