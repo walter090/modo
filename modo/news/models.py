@@ -26,7 +26,7 @@ class Article(models.Model):
     tweets = models.TextField(_('tweets'), null=True, blank=True)
     images = models.TextField(_('images'), null=True, blank=True)
 
-    summarization = models.TextField(_('summarization'), null=True, blank=True)
+    summary = models.TextField(_('summarization'), null=True, blank=True)
     keywords = JSONField(null=True, blank=True)
 
     saved_by = models.ManyToManyField(Human, related_name='saved', blank=True)
