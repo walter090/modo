@@ -9,7 +9,9 @@ env = environ.Env()
 env_file = str(BASE_DIR('.env'))
 env.read_env(env_file)
 
-logging.basicConfig(handlers=[logging.FileHandler(env('LOG_FILE'), 'w', 'utf-8')], level=env('LOG_LEVEL'))
+logging.basicConfig(handlers=[logging.FileHandler(env('LOG_FILE'), 'w', 'utf-8')],
+                    level=env('LOG_LEVEL'),
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
