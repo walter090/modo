@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -27,7 +27,7 @@ class Article(models.Model):
     images = models.TextField(_('images'), null=True, blank=True)
 
     summary = models.TextField(_('summarization'), null=True, blank=True)
-    keywords = JSONField(null=True, blank=True)
+    keywords = ArrayField(models.CharField(max_length=50), null=True, blank=True)
 
     saved_by = models.ManyToManyField(Human, related_name='saved', blank=True)
     viewed_by = models.ManyToManyField(Human, related_name='viewed', blank=True)
