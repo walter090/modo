@@ -19,7 +19,6 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             'tweets',
             'publish_time',
             'videos',
-            'tags'
         )
 
 
