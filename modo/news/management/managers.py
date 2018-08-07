@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from dateutil import parser
@@ -7,6 +6,7 @@ from django.db import IntegrityError
 from django.db.models import Manager
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+from gensim.summarization import keywords, summarize
 from goose3 import Goose
 
 from person.models import Human
@@ -47,7 +47,11 @@ class ArticleManager(Manager):
 
         article.images = title_image
         article.domain = article_info['domain']
-        article.text = self._extract_section(article_info, 'cleaned_text', None)
+
+        article_text = self._extract_section(article_info, 'cleaned_text', None)
+        article.text = article_text
+        article.summarization = summarize(article_text, word_count=75)
+        article.keywords = keywords(article_text, words=5)
 
         try:
             site_name = article_info['opengraph']['site_name']
