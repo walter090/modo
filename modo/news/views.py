@@ -7,10 +7,10 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from . import serializers
 from .management.paginators import ArticlePaginator
 from .management import tasks
 from .models import Article
-from .serializers import ArticleSerializer, ArticleCreationSerializer, ArticleHeadlineSerializer
 
 
 class NewsView(ModelViewSet):
@@ -50,11 +50,13 @@ class NewsView(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'create':
-            return ArticleCreationSerializer
+            return serializers.ArticleCreationSerializer
         elif self.action == 'list':
-            return ArticleHeadlineSerializer
+            return serializers.ArticleHeadlineSerializer
+        elif self.action == 'summarize':
+            return serializers.ArticleSummarySerializer
         else:
-            return ArticleSerializer
+            return serializers.ArticleSerializer
 
     def get_permissions(self):
         if self.action == 'destroy' \
@@ -161,3 +163,19 @@ class NewsView(ModelViewSet):
     def update_sources(self, request, *args, **kwargs):
         tasks.update_sources()
         return Response({})
+
+    @action(methods=['get'], detail=True)
+    def summarize(self, request, *args, **kwargs):
+        article = self.get_object()
+        summary_data = self.get_serializer(article).data
+
+        keywords = summary_data['keywords']
+        related_articles = \
+            Article.objects.filter(keywords__contains=keywords[:1]) \
+            .order_by('-publish_time')[:10] \
+            .values_list('identifier', 'title', 'images', 'site_name', 'publish_time')
+        related_articles = list(related_articles)
+
+        summary_data['related'] = related_articles
+
+        return Response(summary_data)
