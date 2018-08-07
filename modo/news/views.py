@@ -59,9 +59,7 @@ class NewsView(ModelViewSet):
     def get_permissions(self):
         if self.action == 'destroy' \
                 or self.action == 'partial_update' \
-                or self.action == 'create' \
-                or self.action == 'pull_articles' \
-                or self.action == 'update_sources':
+                or self.action == 'create':
             permission_classes = [permissions.IsAdminUser]
         else:
             permission_classes = [permissions.AllowAny]
