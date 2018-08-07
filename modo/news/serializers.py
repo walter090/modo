@@ -19,6 +19,23 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             'tweets',
             'publish_time',
             'videos',
+            'images',
+        )
+
+
+class ArticleSummarySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Article
+        fields = (
+            'identifier',
+            'url',
+            'title',
+            'authors',
+            'summary',
+            'keywords',
+            'site_name',
+            'publish_time',
+            'images',
         )
 
 
