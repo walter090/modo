@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -168,7 +169,7 @@ class NewsView(ModelViewSet):
 
         keywords = summary_data['keywords']
         related_articles = \
-            Article.objects.filter(keywords__contains=keywords[:2]) \
+            Article.objects.filter(Q(keywords__contains=keywords[:1]) | Q(keywords__contains=keywords[1:2])) \
             .order_by('-publish_time')[:11] \
             .values('identifier', 'title', 'images', 'site_name', 'publish_time')
 
