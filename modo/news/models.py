@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -12,18 +13,21 @@ class Article(models.Model):
     url = models.TextField(_('url'), unique=True)
     title = models.TextField(_('title'))
     slug = models.SlugField(_('slug title'), max_length=200, blank=True, null=True)
+
     authors = models.TextField(_('authors'), null=True)
     description = models.TextField(_('description'), null=True, blank=True)
     language = models.CharField(_('language'), max_length=10, default='en')
     text = models.TextField(_('text'), null=True, blank=True)
-    site_name = models.CharField(_('site name'), max_length=50, null=True)
-    tweets = models.TextField(_('tweets'), null=True, blank=True)
     publish_time = models.DateTimeField(_('publish time'), null=True)
-    videos = models.TextField(_('videos'), null=True, blank=True)
-    tags = models.TextField(_('tags'), null=True, blank=True)
-    topic = models.CharField(_('category'), max_length=20, default='general')
-    images = models.TextField(_('images'), null=True, blank=True)
+
+    site_name = models.CharField(_('site name'), max_length=50, null=True)
     domain = models.CharField(_('domain'), max_length=50, default='google.com')
+    videos = models.TextField(_('videos'), null=True, blank=True)
+    tweets = models.TextField(_('tweets'), null=True, blank=True)
+    images = models.TextField(_('images'), null=True, blank=True)
+
+    summarization = models.TextField(_('summarization'), null=True, blank=True)
+    keywords = JSONField(null=True, blank=True)
 
     saved_by = models.ManyToManyField(Human, related_name='saved', blank=True)
     viewed_by = models.ManyToManyField(Human, related_name='viewed', blank=True)
