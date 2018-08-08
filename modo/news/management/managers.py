@@ -58,7 +58,7 @@ class ArticleManager(Manager):
 
         article_text = self._extract_section(article_info, 'cleaned_text', None)
         article.text = article_text
-        article.summary = summarize(article_text, ratio=0.2)
+        article.summary = summarize('. '.join([description, article_text]), ratio=0.2)
         article.keywords = keywords('. '.join([title, description, article_text]), words=5, split=True,
                                     ratio=0.25, lemmatize=True)
 
