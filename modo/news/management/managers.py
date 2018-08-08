@@ -29,6 +29,7 @@ class ArticleManager(Manager):
             authors: str, Authors' names.
             publish_time: str, Time of publishing.
             title_image: str, URL to title image.
+            undesirables: str, List of undesirable sources.
 
         Returns:
             None.
