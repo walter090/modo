@@ -169,7 +169,9 @@ class NewsView(ModelViewSet):
 
         keywords = summary_data['keywords']
         related_articles = \
-            Article.objects.filter(Q(keywords__contains=keywords[:1]) | Q(keywords__contains=keywords[1:2])) \
+            Article.objects.filter(Q(keywords__contains=keywords[:1])
+                                   | Q(keywords__contains=keywords[1:2])
+                                   | Q(keywords__contains=keywords[2:3])) \
             .order_by('-publish_time')[:11] \
             .values('identifier', 'title', 'images', 'site_name', 'publish_time')
 
