@@ -178,7 +178,7 @@ class NewsView(ModelViewSet):
                                    | Q(keywords__contains=keywords[1:2])
                                    | Q(keywords__contains=keywords[2:3])) \
             .order_by('-publish_time')[:11] \
-            .values('identifier', 'title', 'images', 'site_name', 'publish_time')
+            .values('identifier', 'title', 'images', 'site_name', 'domain', 'publish_time')
 
         related_articles = [related for related in list(related_articles)
                             if related['identifier'] != article.identifier]
