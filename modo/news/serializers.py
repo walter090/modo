@@ -34,6 +34,7 @@ class ArticleSummarySerializer(serializers.HyperlinkedModelSerializer):
             'summary',
             'keywords',
             'site_name',
+            'domain',
             'publish_time',
             'images',
         )
