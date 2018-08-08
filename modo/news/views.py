@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -48,6 +49,10 @@ class NewsView(ModelViewSet):
     """
     queryset = Article.objects.defer('text', 'tweets').order_by('-publish_time')
     pagination_class = ArticlePaginator
+    filter_backends = [SearchFilter, OrderingFilter]
+
+    search_fields = ['title', 'keywords']
+    ordering = ['-publish_time']
 
     def get_serializer_class(self):
         if self.action == 'create':
