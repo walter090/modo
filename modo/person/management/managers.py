@@ -50,3 +50,11 @@ class HumanManager(BaseUserManager):
             human.interests['keywords'] = keywords
 
         human.save()
+
+    def add_settings(self, user_id, settings):
+        human = self.get(identifier=user_id)
+
+        for setting, value in settings.items():
+            human.settings[setting] = value
+
+        human.save()
