@@ -23,7 +23,7 @@ class HumanView(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
 
     lookup_field = 'username'
-    search_fields = ['username', 'email', ]
+    search_fields = ['username', 'email']
     ordering = ['-registered_since', 'username']
 
     def get_permissions(self):
