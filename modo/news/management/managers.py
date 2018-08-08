@@ -42,6 +42,10 @@ class ArticleManager(Manager):
 
         article_info = goose.extract(url=url)
         article_info = article_info.infos
+
+        if article_info['domain'] == 'www.theladbible.com':
+            return
+
         article.description = description
         article.title = title
 
