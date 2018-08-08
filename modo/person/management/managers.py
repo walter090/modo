@@ -29,3 +29,24 @@ class HumanManager(BaseUserManager):
             raise ValueError('The user is not a superuser')
 
         return self._create_user(username, email, password, **kwargs)
+
+    def add_interests(self, user_id, keywords=None, sources=None):
+        if sources is None and keywords is None:
+            return
+        if sources is None:
+            sources = []
+        if keywords is None:
+            keywords = []
+
+        human = self.get(identifier=user_id)
+        if 'sources' in human.interests:
+            human.interests['sources'] += sources
+        else:
+            human.interests[sources] = sources
+
+        if 'keywords' in human.interests:
+            human.interests['keywords'] += keywords
+        else:
+            human.interests['keywords'] = keywords
+
+        human.save()
