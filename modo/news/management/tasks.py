@@ -10,6 +10,7 @@ from news.models import Article
 from .secret_constants import API_KEY
 
 logger = logging.getLogger(__name__)
+base = os.path.dirname(os.path.abspath(__file__))
 
 
 def log_completion_time(task):
@@ -49,6 +50,11 @@ def pull_articles():
         except Timeout:
             continue
 
+    undesirables = []
+    with open(os.path.join(base, 'undesirable_sources.txt'), 'r') as file:
+        for line in file:
+            undesirables.append(line)
+
     for article in articles:
         try:
             Article.objects.create_article(
@@ -75,7 +81,6 @@ def update_sources():
     sources = list(filter(regex.search, sources))
 
     # Save sources to text file.
-    base = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(base, 'sources.txt'), 'w') as file:
         for source in sources:
             file.write(source)

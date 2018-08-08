@@ -19,7 +19,7 @@ class ArticleManager(Manager):
 
     def create_article(self, url, authors,
                        publish_time, title_image, description,
-                       title):
+                       title, undesirables=None):
         """Function for creating a new article.
 
         Args:
@@ -33,6 +33,9 @@ class ArticleManager(Manager):
         Returns:
             None.
         """
+        if undesirables is None:
+            undesirables = []
+
         if self.filter(url=url).count():
             return
 
@@ -43,7 +46,7 @@ class ArticleManager(Manager):
         article_info = goose.extract(url=url)
         article_info = article_info.infos
 
-        if article_info['domain'] == 'www.theladbible.com':
+        if article_info['domain'] in undesirables:
             return
 
         article.description = description
