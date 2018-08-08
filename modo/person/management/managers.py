@@ -31,6 +31,16 @@ class HumanManager(BaseUserManager):
         return self._create_user(username, email, password, **kwargs)
 
     def add_interests(self, user_id, keywords=None, sources=None):
+        """Add interests to a user's account
+
+        Args:
+            user_id: str, User identification.
+            keywords: list, List of interested keywords/topics.
+            sources: list, List of interested sources.
+
+        Returns:
+            None
+        """
         if sources is None and keywords is None:
             return
         if sources is None:
@@ -48,6 +58,9 @@ class HumanManager(BaseUserManager):
             human.interests['keywords'] += keywords
         else:
             human.interests['keywords'] = keywords
+
+        human.interests['sources'] = list(set(human.interests['sources']))
+        human.interests['keywords'] = list(set(human.interests['keywords']))
 
         human.save()
 
