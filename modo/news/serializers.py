@@ -16,9 +16,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             'language',
             'text',
             'site_name',
-            'tweets',
             'publish_time',
-            'videos',
             'images',
         )
 
