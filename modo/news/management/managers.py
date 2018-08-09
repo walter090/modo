@@ -73,7 +73,7 @@ class ArticleManager(Manager):
             article.authors = site_name
         else:
             authors = authors.strip()
-            article.authors = ' '.join([author.capitalize() for author in authors.split(' ')])
+            article.authors = ', '.join([author.capitalize() for author in authors.split(' ')])
 
         lang = article_info['meta']['lang']
         article.language = lang if lang else 'en'
