@@ -22,8 +22,6 @@ class Article(models.Model):
 
     site_name = models.CharField(_('site name'), max_length=50, null=True)
     domain = models.CharField(_('domain'), max_length=50, default='google.com')
-    videos = models.TextField(_('videos'), null=True, blank=True)
-    tweets = models.TextField(_('tweets'), null=True, blank=True)
     images = models.TextField(_('images'), null=True, blank=True)
 
     summary = models.TextField(_('summarization'), null=True, blank=True)
