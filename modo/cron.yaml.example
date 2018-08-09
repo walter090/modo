@@ -5,4 +5,4 @@ cron:
    schedule: "0 */2 * * *"
  - name: "update_sources"
    url: "/news/another_task/"
-   schedule: "0 0 1 * 0"
+   schedule: "0 0 1 * *"
