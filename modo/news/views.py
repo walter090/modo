@@ -47,7 +47,7 @@ class NewsView(ModelViewSet):
     update_sources:
     Update list of news sources.
     """
-    queryset = Article.objects.defer('text', 'tweets').order_by('-publish_time')
+    queryset = Article.objects.defer('text').order_by('-publish_time')
     pagination_class = ArticlePaginator
     filter_backends = [SearchFilter, OrderingFilter]
 
