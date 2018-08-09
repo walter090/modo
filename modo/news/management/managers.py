@@ -78,10 +78,6 @@ class ArticleManager(Manager):
         lang = article_info['meta']['lang']
         article.language = lang if lang else 'en'
 
-        tweets = self._extract_section(article_info, 'tweets', None)
-        tags = self._extract_section(article_info, 'tags', None)
-        videos = self._extract_section(article_info, 'videos', None)
-
         article.slug = slugify(article.title) if article.title else None
 
         current_time = timezone.now()
@@ -92,10 +88,6 @@ class ArticleManager(Manager):
                 else current_time
         except (ValueError, OverflowError, TypeError):
             article.publish_time = current_time
-
-        article.tweets = ', '.join(tweets) if tweets and len(tweets) else None
-        article.videos = ', '.join([video['src'] for video in videos]) if videos and len(videos) else None
-        article.tags = ', '.join(tags) if tags and len(tags) else None
 
         try:
             article.full_clean()
