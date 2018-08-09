@@ -3,7 +3,7 @@
 modo/modo/settings_secret.py
 __pycache__/
 jupyter/
-modo/news/management/secret_constant.py
+modo/news/management/secret_constants.py
 modo/static/
 modo/celerybeat-schedule.bak
 modo/celerybeat-schedule.dat
