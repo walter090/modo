@@ -133,7 +133,7 @@ class NewsView(ModelViewSet):
             article.saved_by.remove(request.user)
             return Response({'message': '"{}" is no longer saved.'.format(article.title)})
 
-    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def view(self, request, *args, **kwargs):
         try:
             article = self.get_object()
@@ -168,7 +168,7 @@ class NewsView(ModelViewSet):
         return Response({})
 
     @action(methods=['get'], detail=True)
-    def summarize(self, request, *args, **kwargs):
+    def summary(self, request, *args, **kwargs):
         article = self.get_object()
         summary_data = self.get_serializer(article).data
 
