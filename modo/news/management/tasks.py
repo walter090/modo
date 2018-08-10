@@ -63,7 +63,8 @@ def pull_articles():
                 publish_time=article['publishedAt'],
                 title_image=article['urlToImage'],
                 title=article['title'],
-                description=article['description']
+                description=article['description'],
+                undesirables=undesirables
             )
         except:
             continue
