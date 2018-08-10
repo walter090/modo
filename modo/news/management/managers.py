@@ -58,9 +58,13 @@ class ArticleManager(Manager):
 
         article_text = self._extract_section(article_info, 'cleaned_text', None)
         article.text = article_text
-        article.summary = summarize('. '.join([description, article_text]), ratio=0.2)
         article.keywords = keywords('. '.join([title, description, article_text]), words=5, split=True,
                                     ratio=0.25, lemmatize=True)
+
+        summary = summarize('. '.join([description, article_text]), ratio=0.2)
+        if summary == '':
+            summary = summarize('. '.join([description, article_text]), word_count=50)
+        article.summary = summary
 
         try:
             site_name = article_info['opengraph']['site_name']
