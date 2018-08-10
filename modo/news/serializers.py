@@ -24,7 +24,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
 class ArticleSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = (
+        fields = [
             'identifier',
             'url',
             'title',
@@ -35,19 +35,37 @@ class ArticleSummarySerializer(serializers.HyperlinkedModelSerializer):
             'domain',
             'publish_time',
             'images',
-        )
+        ]
 
 
 class ArticleCreationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = ('url', 'authors', 'publish_time', 'images')
+        fields = ['url', 'authors', 'publish_time', 'images']
+
+
+class ArticlePKRetrievalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['url']
+
+
+class ArticleMinimalRetrievalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['identifier']
+
+
+class ArticleTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = []
 
 
 class ArticleHeadlineSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = (
+        fields = [
             'identifier',
             'url',
             'authors',
@@ -57,4 +75,4 @@ class ArticleHeadlineSerializer(serializers.HyperlinkedModelSerializer):
             'description',
             'site_name',
             'domain',
-        )
+        ]

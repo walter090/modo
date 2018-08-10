@@ -55,17 +55,23 @@ class NewsView(ModelViewSet):
     ordering = ['-publish_time']
 
     def get_serializer_class(self):
-        if self.action == 'create':
-            return serializers.ArticleCreationSerializer
-        elif self.action == 'list':
-            return serializers.ArticleHeadlineSerializer
-        elif self.action == 'summarize':
-            return serializers.ArticleSummarySerializer
-        else:
-            return serializers.ArticleSerializer
+        serializer_assignment = {
+            'create': serializers.ArticleCreationSerializer,
+            'list': serializers.ArticleHeadlineSerializer,
+            'summary': serializers.ArticleSummarySerializer,
+            'get_primary_key': serializers.ArticlePKRetrievalSerializer,
+            'pull_articles': serializers.ArticleTaskSerializer,
+            'update_sources': serializers.ArticleTaskSerializer,
+
+        }
+
+        return serializers.ArticleSerializer \
+            if self.action not in serializer_assignment \
+            else serializer_assignment[self.action]
 
     def get_permissions(self):
         if self.action == 'destroy' \
+                or self.action == 'update' \
                 or self.action == 'partial_update' \
                 or self.action == 'create':
             permission_classes = [permissions.IsAdminUser]
@@ -118,7 +124,7 @@ class NewsView(ModelViewSet):
         article.shared_by.add(request.user)
         return Response({'message': '"{}" is shared'.format(article.title)})
 
-    @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def save(self, request, *args, **kwargs):
         try:
             article = self.get_object()
@@ -133,7 +139,7 @@ class NewsView(ModelViewSet):
             article.saved_by.remove(request.user)
             return Response({'message': '"{}" is no longer saved.'.format(article.title)})
 
-    @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def view(self, request, *args, **kwargs):
         try:
             article = self.get_object()
