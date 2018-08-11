@@ -78,7 +78,7 @@ def update_sources():
     sources = [source['id'] for source in sources]
     # Exclude Google News
     regex = re.compile(r'^(?!(google-news|financial-times|fox-sports|'
-                       r'australian-financial-review|reddit-r-all|the-lad-bible))')
+                       r'australian-financial-review|reddit-r-all|the-lad-bible|the-jerusalem-post))')
     sources = list(filter(regex.search, sources))
 
     # Save sources to text file.
