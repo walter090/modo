@@ -139,7 +139,7 @@ class NewsView(ModelViewSet):
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
-    def pull_articles(self):
+    def pull_articles(self, *args, **kwargs):
         """ Pull new articles from the internet. Avoid frequently making this request.
         """
         tasks.pull_articles()
@@ -147,7 +147,7 @@ class NewsView(ModelViewSet):
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
-    def update_sources(self):
+    def update_sources(self, *args, **kwargs):
         """ Update the list of news sources.
         """
         tasks.update_sources()
