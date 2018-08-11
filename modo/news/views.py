@@ -2,8 +2,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -155,7 +154,7 @@ class NewsView(ModelViewSet):
         return Response({})
 
     @action(methods=['get'], detail=True)
-    def summary(self):
+    def summary(self, *args, **kwargs):
         """ Get the summary and keywords on the current article instance.
         """
         article = self.get_object()
