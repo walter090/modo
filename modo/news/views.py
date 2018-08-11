@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.decorators import action
@@ -165,17 +166,23 @@ class NewsView(ModelViewSet):
     @csrf_exempt
     @action(methods=['post'], detail=False)
     def pull_articles(self):
+        """ Pull new articles from the internet. Avoid frequently making this request.
+        """
         tasks.pull_articles()
         return Response({})
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
     def update_sources(self):
+        """ Update the list of news sources.
+        """
         tasks.update_sources()
         return Response({})
 
     @action(methods=['get'], detail=True)
     def summary(self):
+        """ Get the summary and keywords on the current article instance.
+        """
         article = self.get_object()
         summary_data = self.get_serializer(article).data
 
@@ -184,8 +191,8 @@ class NewsView(ModelViewSet):
             Article.objects.filter(Q(keywords__contains=keywords[:1])
                                    | Q(keywords__contains=keywords[1:2])
                                    | Q(keywords__contains=keywords[2:3])) \
-            .order_by('-publish_time')[:11] \
-            .values('identifier', 'title', 'images', 'site_name', 'domain', 'publish_time')
+                .order_by('-publish_time')[:11] \
+                .values('identifier', 'title', 'images', 'site_name', 'domain', 'publish_time')
 
         related_articles = [related for related in list(related_articles)
                             if related['identifier'] != article.identifier]
@@ -196,8 +203,24 @@ class NewsView(ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def summarize(self, request):
+        """ Get summary and keywords from given source url in param sourceUrl.
+        """
         summarizer = Summarizer()
         data = request.query_params
+        print('numKeywords' in data)
 
-        summarizer.fetch(data['sourceUrl'])
-        return Response(summarizer.dump())
+        summarizer.num_keywords = summarizer.num_keywords if 'numKeywords' not in data \
+            else data['numKeywords']
+        summarizer.min_wordcount = summarizer.min_wordcount if 'minWords' not in data \
+            else data['minWords']
+        summarizer.max_wordcount = summarizer.max_wordcount if 'maxWords' not in data \
+            else data['maxWords']
+        summarizer.default_ratio = summarizer.default_ratio if 'ratio' not in data \
+            else data['ratio']
+
+        try:
+            result = summarizer.fetch(data['sourceUrl'])
+        except MultiValueDictKeyError as e:
+            return Response({'error': str(e)})
+
+        return Response(result)
