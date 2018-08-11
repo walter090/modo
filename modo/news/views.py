@@ -18,37 +18,6 @@ from .models import Article
 
 
 class NewsView(ModelViewSet):
-    """
-    retrieve:
-    Return a given news article according to ID.
-
-    create:
-    Create a new news article. Only admin can perform this action.
-
-    delete:
-    Delete a news article instance. Only admin can perform this action.
-
-    list:
-    List all news articles 40 per page.
-
-    share:
-    Add given article to the shared articles list of authenticated user.
-
-    save:
-    Save the given article for authenticated user.
-
-    view:
-    Add the article to authenticated user's viewed articles.
-
-    get_primary_key:
-    Get the article ID given the url of article source.
-
-    pull_articles:
-    Pull latest news articles from the internet.
-
-    update_sources:
-    Update list of news sources.
-    """
     queryset = Article.objects.defer('text').order_by('-publish_time')
     pagination_class = ArticlePaginator
     filter_backends = [SearchFilter, OrderingFilter]
@@ -118,6 +87,7 @@ class NewsView(ModelViewSet):
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def share(self, request):
+        """ Add the article to current user's list of shared articles."""
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -128,6 +98,7 @@ class NewsView(ModelViewSet):
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def save(self, request):
+        """ Add the article to current user's list of saved articles."""
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -143,6 +114,7 @@ class NewsView(ModelViewSet):
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def view(self, request):
+        """ Add the article to current user's list of viewed articles."""
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -155,6 +127,7 @@ class NewsView(ModelViewSet):
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request):
+        """ Get article instance primary key from input article source url. Admin only."""
         queryset = self.get_queryset()
         url = request.data['url']
         try:
