@@ -3,6 +3,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -11,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from . import serializers
-from .management.paginators import ArticlePaginator
 from .management import tasks
+from .management.paginators import ArticlePaginator
 from .management.summary import Summarizer
 from .models import Article
 
@@ -50,6 +51,7 @@ class NewsView(ModelViewSet):
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
 
+    @ensure_csrf_cookie
     def create(self, request, *args, **kwargs):
         """ Add a news story manually, for admin use only.
         """
@@ -164,8 +166,8 @@ class NewsView(ModelViewSet):
             Article.objects.filter(Q(keywords__contains=keywords[:1])
                                    | Q(keywords__contains=keywords[1:2])
                                    | Q(keywords__contains=keywords[2:3])) \
-                .order_by('-publish_time')[:11] \
-                .values('identifier', 'title', 'images', 'site_name', 'domain', 'publish_time')
+            .order_by('-publish_time')[:11] \
+            .values('identifier', 'title', 'images', 'site_name', 'domain', 'publish_time')
 
         related_articles = [related for related in list(related_articles)
                             if related['identifier'] != article.identifier]
