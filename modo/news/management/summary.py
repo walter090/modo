@@ -100,6 +100,9 @@ class Summarizer:
         else:
             summary = summarize(text, ratio=result_ratio)
 
+        if summary == '':
+            summary = text
+
         shrunk_length = self._count_words(summary)
         shrinkage = round((original_length - shrunk_length) / original_length, 2)
 

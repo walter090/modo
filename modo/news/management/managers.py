@@ -64,6 +64,8 @@ class ArticleManager(Manager):
         summary = summarize('. '.join([description, article_text]), ratio=0.2)
         if summary == '':
             summary = summarize('. '.join([description, article_text]), word_count=50)
+        if summary == '':
+            summary = article_text
         article.summary = summary
 
         try:
@@ -88,7 +90,7 @@ class ArticleManager(Manager):
         try:
             publish_time = parser.parse(publish_time)
 
-            article.publish_time = publish_time if publish_time <= current_time\
+            article.publish_time = publish_time if publish_time <= current_time \
                 else current_time
         except (ValueError, OverflowError, TypeError):
             article.publish_time = current_time
