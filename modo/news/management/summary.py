@@ -7,27 +7,34 @@ from gensim.summarization import keywords, summarize
 
 class Summarizer:
     def __init__(self):
-        self.raw_info = None
+        self._raw_info = None
 
-        self.title = None
-        self.description = None
-        self.text = None
-        self.summary = None
-        self.keywords = None
+        self.num_keywords = 5
+        self.default_ratio = 0.2
+        self.min_wordcount = 50
+        self.max_wordcount = 150
 
-        self.language = None
-        self.domain = None
-        self.type = None
-        self.authors = None
-        self.canonical_url = None
+    def fetch(self, url, num_keywords=None, result_ratio=None, min_wordcount=None, max_wordcount=None):
+        if num_keywords is None:
+            num_keywords = self.num_keywords
 
-        self.shrinkage = 0
-        self.original_length = -1
-        self.shrunk_length = -1
+        if result_ratio is None:
+            result_ratio = self.default_ratio
 
-    def fetch(self, url, num_keywords=5, result_ratio=0.2, min_wordcount=50, max_wordcount=150):
+        if min_wordcount is None:
+            min_wordcount = self.min_wordcount
+
+        if max_wordcount is None:
+            max_wordcount = self.max_wordcount
+
+        if result_ratio > 1 or result_ratio < 0:
+            raise ValueError('Illegal value for ratio: ratio must be between 0 and 1.')
+
+        if min_wordcount > max_wordcount:
+            raise ValueError('Minimum word count cannot be greater that maximum word count.')
+
         self.fetch_only(url)
-        self._parse(num_keywords, result_ratio, min_wordcount, max_wordcount)
+        return self._parse(num_keywords, result_ratio, min_wordcount, max_wordcount)
 
     def fetch_only(self, url):
         """Fetch from source without parsing.
@@ -40,51 +47,51 @@ class Summarizer:
         """
         goose = Goose()
         article = goose.extract(url)
-        self.raw_info = article.infos
+        self._raw_info = article.infos
 
     def _parse(self, num_keywords, result_ratio, min_wordcount, max_wordcount):
-        self.title = self.raw_info['title']
-        self.description = self.raw_info['meta']['description']
-        self.text = self.raw_info['cleaned_text']
+        result = dict()
 
-        self.language = self.raw_info['meta']['lang']
-        self.domain = self.raw_info['domain']
-        self.type = self.raw_info['opengraph']['type']
-        self.authors = self.raw_info['authors']
-        self.canonical_url = self.raw_info['opengraph']['url']
+        title = self._raw_info['title']
+        result['title'] = title
 
-        self.summary = self.summarize_text('. '.join([self.description, self.text]),
-                                           result_ratio=result_ratio,
-                                           min_wordcount=min_wordcount,
-                                           max_wordcount=max_wordcount)
-        self.keywords = keywords(text='. '.join([self.title,
-                                                 self.description,
-                                                 self.text]),
-                                 ratio=0.25,
-                                 words=num_keywords, split=True, lemmatize=True)
+        description = self._raw_info['meta']['description']
+        result['description'] = description
 
-    def dump(self):
-        """ Return all extracted information in a dictionary.
+        text = self._raw_info['cleaned_text']
+        result['text'] = text
 
-        Returns:
-            extraction: dict. Extracted info in a Python dictionary.
-        """
-        extraction = {key: value for key, value in self.__dict__.items()
-                      if not (key.startswith('raw') or key.startswith('_'))}
-        return extraction
+        result['language'] = self._raw_info['meta']['lang']
+        result['domain'] = self._raw_info['domain']
+        result['type'] = self._raw_info['opengraph']['type']
+        result['authors'] = self._raw_info['authors']
+        result['canonical_url'] = self._raw_info['opengraph']['url']
 
-    def dump_raw(self):
+        result['summarizaion'] = self.summarize_text('. '.join([description, text]),
+                                                     result_ratio=result_ratio,
+                                                     min_wordcount=min_wordcount,
+                                                     max_wordcount=max_wordcount)
+        result['keywords_'] = keywords(text='. '.join([title,
+                                                       description,
+                                                       text]),
+                                       ratio=0.25,
+                                       words=num_keywords, split=True, lemmatize=True)
+
+        return result
+
+    @property
+    def raw_info(self):
         """ Dump pulled raw information.
 
         Returns:
             raw_info: dict. Raw information.
         """
-        return self.raw_info
+        return self._raw_info
 
     def summarize_text(self, text, result_ratio=0.2, min_wordcount=50, max_wordcount=150):
-        self.original_length = self._count_words(text)
+        original_length = self._count_words(text)
 
-        shrunk_wordcount = int(self.original_length * result_ratio)
+        shrunk_wordcount = int(original_length * result_ratio)
 
         if shrunk_wordcount < min_wordcount:
             summary = summarize(text, word_count=min_wordcount)
@@ -93,10 +100,15 @@ class Summarizer:
         else:
             summary = summarize(text, ratio=result_ratio)
 
-        self.shrunk_length = self._count_words(summary)
-        self.shrinkage = round((self.original_length - self.shrunk_length) / self.original_length, 2)
+        shrunk_length = self._count_words(summary)
+        shrinkage = round((original_length - shrunk_length) / original_length, 2)
 
-        return summary
+        return {
+            'summary': summary,
+            'original_length': original_length,
+            'summary_length': shrunk_length,
+            'shrinkage': shrinkage
+        }
 
     @staticmethod
     def _count_words(text):
