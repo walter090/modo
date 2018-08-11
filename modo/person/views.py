@@ -45,6 +45,7 @@ class HumanView(ModelViewSet):
 
     @ensure_csrf_cookie
     def create(self, request, *args, **kwargs):
+        """ Create a new user."""
         model_form = SignupForm(request.data)
         serializer = self.get_serializer(data=request.data)
 
@@ -59,6 +60,7 @@ class HumanView(ModelViewSet):
 
     @ensure_csrf_cookie
     def partial_update(self, request, *args, **kwargs):
+        """ Modify an existing user."""
         try:
             human = self.get_object()
         except Http404 as e:
@@ -75,6 +77,7 @@ class HumanView(ModelViewSet):
         return Response({'info': 'Account updated.'})
 
     def destroy(self, request, *args, **kwargs):
+        """ Delete a user from database."""
         try:
             human = self.get_object()
         except Http404 as e:
@@ -85,7 +88,8 @@ class HumanView(ModelViewSet):
         return Response({'email': email})
 
     @action(methods=['get'], detail=True, permission_classes=[IsSelfOrAdmin])
-    def saved(self, request, *args, **kwargs):
+    def saved(self):
+        """ View a list of articles saved by the current user."""
         try:
             human = self.get_object()
         except Http404 as e:
@@ -96,7 +100,8 @@ class HumanView(ModelViewSet):
         return Response(serializer.data)
 
     @action(methods=['get'], detail=True, permission_classes=[IsSelfOrAdmin])
-    def viewed(self, request, *args, **kwargs):
+    def viewed(self):
+        """ View a list of articles saved by the current user."""
         try:
             human = self.get_object()
         except Http404 as e:
@@ -108,6 +113,7 @@ class HumanView(ModelViewSet):
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
     def get_primary_key(self, request):
+        """ Get article instance primary key from user email. Admin only."""
         queryset = self.get_queryset()
         email = request.data['email']
         try:
