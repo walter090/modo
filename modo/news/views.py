@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from . import serializers
 from .management.paginators import ArticlePaginator
 from .management import tasks
+from .management.summary import Summarizer
 from .models import Article
 
 
@@ -115,7 +116,7 @@ class NewsView(ModelViewSet):
         return Response(article_data)
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
-    def share(self, request, *args, **kwargs):
+    def share(self, request):
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -125,7 +126,7 @@ class NewsView(ModelViewSet):
         return Response({'message': '"{}" is shared'.format(article.title)})
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
-    def save(self, request, *args, **kwargs):
+    def save(self, request):
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -140,7 +141,7 @@ class NewsView(ModelViewSet):
             return Response({'message': '"{}" is no longer saved.'.format(article.title)})
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated])
-    def view(self, request, *args, **kwargs):
+    def view(self, request):
         try:
             article = self.get_object()
         except PermissionDenied as pd:
@@ -152,7 +153,7 @@ class NewsView(ModelViewSet):
             return Response({'message': '"{}" is viewd.'.format(article.title)})
 
     @action(methods=['post'], detail=False, permission_classes=[permissions.IsAdminUser])
-    def get_primary_key(self, request, *args, **kwargs):
+    def get_primary_key(self, request):
         queryset = self.get_queryset()
         url = request.data['url']
         try:
@@ -163,18 +164,18 @@ class NewsView(ModelViewSet):
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
-    def pull_articles(self, request, *args, **kwargs):
+    def pull_articles(self):
         tasks.pull_articles()
         return Response({})
 
     @csrf_exempt
     @action(methods=['post'], detail=False)
-    def update_sources(self, request, *args, **kwargs):
+    def update_sources(self):
         tasks.update_sources()
         return Response({})
 
     @action(methods=['get'], detail=True)
-    def summary(self, request, *args, **kwargs):
+    def summary(self):
         article = self.get_object()
         summary_data = self.get_serializer(article).data
 
@@ -192,3 +193,11 @@ class NewsView(ModelViewSet):
         summary_data['related'] = related_articles
 
         return Response(summary_data)
+
+    @action(methods=['get'], detail=False)
+    def summarize(self, request):
+        summarizer = Summarizer()
+        data = request.query_params
+
+        summarizer.fetch(data['sourceUrl'])
+        return Response(summarizer.dump())
