@@ -40,7 +40,7 @@ class ArticleManager(Manager):
         if self.filter(url=url).count():
             return
 
-        article = self.model(url=url, authors=authors)
+        article = self.model(authors=authors)
 
         goose = Goose()
 
@@ -49,6 +49,8 @@ class ArticleManager(Manager):
 
         if article_info['domain'] in undesirables:
             return
+
+        article.url = article_info['opengraph']['url']
 
         article.description = description
         article.title = title
